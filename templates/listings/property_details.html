@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="property-details">
+
+    <div class="details-header">
+        <h1>{{ property.title|default:"Property Title" }}</h1>
+        <p class="price">£{{ property.price|default:"0" }}</p>
+    </div>
+
+    <div class="details-layout">
+
+        <div class="image-section">
+            <img src="{{ property.image.url|default:'/static/images/placeholder.jpg' }}" alt="Property Image">
+        </div>
+
+        <div class="info-section">
+            <h3>Description</h3>
+            <p>{{ property.description|default:"Property description goes here." }}</p>
+
+            <h3>Location</h3>
+            <p>{{ property.location|default:"Unknown location" }}</p>
+
+            <h3>Features</h3>
+            <ul>
+                <li>3 Bedrooms</li>
+                <li>2 Bathrooms</li>
+                <li>Garden</li>
+                <li>Parking</li>
+            </ul>
+
+            <a href="/checkout/" class="btn">Book Viewing</a>
+        </div>
+
+    </div>
+
+</section>
+{% endblock %}
