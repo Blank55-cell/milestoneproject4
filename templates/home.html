@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
+
 <section class="hero">
     <h1>Find Your Next Home</h1>
     <p>Explore properties available for rent and purchase.</p>
-
     <a href="/listings/" class="btn">View Listings</a>
 </section>
 
@@ -12,18 +13,22 @@
     <h2>Featured Properties</h2>
 
     <div class="property-grid">
-        <!-- Example placeholder cards -->
+
         <div class="property-card">
-            <img src="/static/images/placeholder.jpg" alt="Property">
+            <img src="{% static 'images/placeholder.jpg' %}" alt="Property">
             <h3>Modern Apartment</h3>
-            <p>£1,200 / month</p>
+            <p class="price">£1,200 / month</p>
+            <a href="/property/1/" class="btn">View</a>
         </div>
 
         <div class="property-card">
-            <img src="/static/images/placeholder.jpg" alt="Property">
-            <h3>3 Bedroom House</h3>
-            <p>£350,000</p>
+            <img src="{% static 'images/placeholder.jpg' %}" alt="Property">
+            <h3>Detached House</h3>
+            <p class="price">£450,000</p>
+            <a href="/property/2/" class="btn">View</a>
         </div>
+
     </div>
 </section>
+
 {% endblock %}

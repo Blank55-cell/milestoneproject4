@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="checkout-box">
+    <h1>Book Your Viewing</h1>
+
+    <p><strong>Property:</strong> {{ property.title }}</p>
+    <p><strong>Booking Fee:</strong> £10</p>
+
+    <button id="checkout-button" class="btn">Pay £10</button>
+</div>
+
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h1>All Properties</h1>
+<p>Browse everything currently available.</p>
+
+<div class="property-grid">
+
+    {% for property in properties %}
+    <div class="property-card">
+        <img src="{% static 'images/placeholder.jpg' %}" alt="Property">
+        <h3>{{ property.title }}</h3>
+        <p class="price">£{{ property.price }}</p>
+        <a href="/property/{{ property.id }}/" class="btn">View Details</a>
+    </div>
+    {% empty %}
+    <p>No properties available right now.</p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}
+

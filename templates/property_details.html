@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="details-wrapper">
+
+    <img src="{% static 'images/placeholder.jpg' %}" alt="Property">
+
+    <div class="info-section">
+        <h1>{{ property.title }}</h1>
+        <p class="price">£{{ property.price }}</p>
+
+        <h3>Description</h3>
+        <p>{{ property.description }}</p>
+
+        <h3>Location</h3>
+        <p>{{ property.location }}</p>
+
+        <h3>Bedrooms</h3>
+        <p>{{ property.bedrooms }}</p>
+
+        <h3>Bathrooms</h3>
+        <p>{{ property.bathrooms }}</p>
+
+        <a href="/checkout/{{ property.id }}/" class="btn">Book Viewing</a>
+    </div>
+
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Real Estate{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+    <!-- navbar -->
+    <header class="nav">
+        <div class="nav-left">
+            <a href="/" class="logo">RealEstate</a>
+        </div>
+
+        <nav class="nav-links">
+            <a href="/">Home</a>
+            <a href="/listings/">Listings</a>
+            <a href="/account/">Account</a>
+        </nav>
+    </header>
+
+    <!-- main content area -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- footer -->
+    <footer class="footer">
+        <p>© {{ now|date:"Y" }} RealEstate. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
