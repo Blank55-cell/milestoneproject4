@@ -1,3 +1,7 @@
-from django.shortcuts import render
+from django.http import HttpResponse
 
-# Create your views here.
+def all_listings(request):
+    return HttpResponse("Welcome to the listings page!")
+
+def listing_detail(request, listing_id):
+    return HttpResponse(f"Looking at listing details for ID: {listing_id}")

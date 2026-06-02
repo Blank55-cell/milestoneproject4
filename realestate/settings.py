@@ -30,7 +30,11 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '.railway.app',
+]
 
 # Application definition
 
@@ -126,3 +130,4 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
