@@ -43,7 +43,7 @@ body {
     border-radius: var(--radius);
     text-decoration: none;
     font-weight: 600;
-    transition: 0.2 ease; 
+    transition: 0.2s ease; 
 }
 
 .btn:hover {
@@ -82,12 +82,13 @@ body {
 /* layout for property details page */
 .details-wrapper {
     display: flex;
-    gap: 40px;
-    padding: 40px 20px;
+    flex-direction: column; 
+    gap: 20px;
+    padding: 20px;
 }
 
 .details-wrapper img {
-    width: 50%;
+    width: 100%;
     border-radius: var(--radius);
 }
 
@@ -102,8 +103,111 @@ body {
     background: var(--card-bg);
     padding: 30px;
     border-radius: var(--radius);
-    width: 350px;
+    max-width: 350px;
+    width: 90%;
     margin: 40px auto;
     text-align: center;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
+
+/* Navbar & Footer Layout Additions */
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: var(--card-bg);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+.logo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.nav-links a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: var(--text-main);
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    color: var(--accent);
+}
+
+.footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+/* Desktop Responsive Breakpoint */
+@media (min-width: 768px) {
+    .details-wrapper {
+        flex-direction: row;
+        gap: 40px;
+        padding: 40px;
+    }
+    
+    .details-wrapper img {
+        width: 50%;
+    }
+}
+
+/* ==========================================
+   Added: Messages & Auth Context Additions
+   ========================================== */
+
+/* Messages Banner Alerts container */
+.messages-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.alert {
+    padding: 12px 20px;
+    margin-bottom: 15px;
+    border-radius: var(--radius);
+    font-weight: 500;
+    text-align: center;
+}
+
+/* Success notification (e.g., Logged in successfully) */
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+/* Error/Warning notification (e.g., Incorrect password) */
+.alert-error, .alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Auth context helper prompt inside property details */
+.login-prompt {
+    background: #eef2f5;
+    padding: 15px;
+    border-radius: var(--radius);
+    margin-top: 20px;
+    text-align: left; /* Aligns cleanly with details prose */
+}
+
+.login-prompt a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.login-prompt a:hover {
+    text-decoration: underline;
+}
+
