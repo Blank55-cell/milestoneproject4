@@ -28,7 +28,9 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 SECRET_KEY = env('SECRET_KEY')
-DEBUG = True
+
+# Dynamically reads True locally from your .env, defaults to False on Railway
+DEBUG = env.bool('DEBUG', default=False)
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -140,12 +142,12 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Unified Django 6+ layout for database and asset handlers
+
 STORAGES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "ENGINE": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
