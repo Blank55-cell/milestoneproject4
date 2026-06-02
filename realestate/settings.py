@@ -28,7 +28,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 SECRET_KEY = env('SECRET_KEY')
-DEBUG = env('DEBUG')
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -56,6 +56,7 @@ SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -138,3 +139,13 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Unified Django 6+ layout for database and asset handlers
+STORAGES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+    },
+    "staticfiles": {
+        "ENGINE": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
