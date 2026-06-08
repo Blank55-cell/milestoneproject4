@@ -26,7 +26,7 @@ def listing_detail(request, listing_id):
     }
     return render(request, 'property_details.html', context)
 
-# Lock this down so only logged-in users can access their dashboard
+# Only logged‑in users should be able to see their dashboard
 @login_required
 def account_dashboard(request):
     return render(request, 'account.html')
