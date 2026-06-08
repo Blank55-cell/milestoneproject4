@@ -5,7 +5,11 @@
 
 <div class="details-wrapper">
 
-    <img src="{% static 'images/placeholder.jpg' %}" alt="Property">
+    {% if property.image_url %}
+        <img src="{{ property.image_url }}" alt="{{ property.title }}">
+    {% else %}
+        <img src="{% static 'images/placeholder.jpg' %}" alt="Placeholder Image">
+    {% endif %}
 
     <div class="info-section">
         <h1>{{ property.title }}</h1>
@@ -23,7 +27,7 @@
         <h3>Bathrooms</h3>
         <p>{{ property.bathrooms }}</p>
 
-        <a href="/checkout/{{ property.id }}/" class="btn">Book Viewing</a>
+        <a href="{% url 'checkout' property.id %}" class="btn">Book Viewing</a>
     </div>
 
 </div>
