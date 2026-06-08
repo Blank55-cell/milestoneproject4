@@ -10,10 +10,16 @@
 
     {% for property in properties %}
     <div class="property-card">
-        <img src="{% static 'images/placeholder.jpg' %}" alt="Property">
+        {% if property.image_url %}
+            <img src="{{ property.image_url }}" alt="{{ property.title }}">
+        {% else %}
+            <img src="{% static 'images/placeholder.jpg' %}" alt="Placeholder Image">
+        {% endif %}
+        
         <h3>{{ property.title }}</h3>
         <p class="price">£{{ property.price }}</p>
-        <a href="/property/{{ property.id }}/" class="btn">View Details</a>
+        
+        <a href="{% url 'listing_detail' property.id %}" class="btn">View Details</a>
     </div>
     {% empty %}
     <p>No properties available right now.</p>
@@ -22,4 +28,3 @@
 </div>
 
 {% endblock %}
-
