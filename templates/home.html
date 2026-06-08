@@ -6,7 +6,7 @@
 <section class="hero">
     <h1>Find Your Next Home</h1>
     <p>Explore properties available for rent and purchase.</p>
-    <a href="/listings/" class="btn">View Listings</a>
+    <a href="{% url 'listings' %}" class="btn">View Listings</a>
 </section>
 
 <section class="featured">
@@ -14,19 +14,22 @@
 
     <div class="property-grid">
 
+        {% for property in featured_properties %}
         <div class="property-card">
-            <img src="{% static 'images/placeholder.jpg' %}" alt="Property">
-            <h3>Modern Apartment</h3>
-            <p class="price">£1,200 / month</p>
-            <a href="/property/1/" class="btn">View</a>
+            {% if property.image_url %}
+                <img src="{{ property.image_url }}" alt="{{ property.title }}">
+            {% else %}
+                <img src="{% static 'images/placeholder.jpg' %}" alt="Placeholder Image">
+            {% endif %}
+            
+            <h3>{{ property.title }}</h3>
+            <p class="price">£{{ property.price }}</p>
+            
+            <a href="{% url 'listing_detail' property.id %}" class="btn">View</a>
         </div>
-
-        <div class="property-card">
-            <img src="{% static 'images/placeholder.jpg' %}" alt="Property">
-            <h3>Detached House</h3>
-            <p class="price">£450,000</p>
-            <a href="/property/2/" class="btn">View</a>
-        </div>
+        {% empty %}
+        <p>No featured properties at the moment.</p>
+        {% endfor %}
 
     </div>
 </section>
