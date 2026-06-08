@@ -14,13 +14,18 @@
     <!-- navbar -->
     <header class="nav">
         <div class="nav-left">
-            <a href="/" class="logo">RealEstate</a>
+            <a href="{% url 'home' %}" class="logo">RealEstate</a>
         </div>
 
         <nav class="nav-links">
-            <a href="/">Home</a>
-            <a href="/listings/">Listings</a>
-            <a href="/account/">Account</a>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'listings' %}">Listings</a>
+            
+            {% if user.is_authenticated %}
+                <a href="{% url 'account_logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'account_login' %}">Account</a>
+            {% endif %}
         </nav>
     </header>
 
@@ -28,10 +33,13 @@
     <main>
         {% block content %}{% endblock %}
     </main>
+
     <!-- footer -->
     <footer class="footer">
-        <p>© {{ now|date:"Y" }} RealEstate. All rights reserved.</p>
+        <p>© {% now "Y" %} RealEstate. All rights reserved.</p>
     </footer>
+
+    <script src="{% static 'js/javascript.js' %}"></script>
 
 </body>
 </html>
