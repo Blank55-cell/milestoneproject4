@@ -138,7 +138,8 @@ STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
 RENTCAST_API_KEY = os.environ.get('RENTCAST_API_KEY', '')
 
 # Allauth configuration
-ACCOUNT_AUTHENTICATION_METHOD = 'email'       # login using email instead of username
-ACCOUNT_EMAIL_REQUIRED = True                 # email needed for signup
+ACCOUNT_LOGIN_METHODS = {'email'}             # login using email instead of username
+ACCOUNT_SIGNUP_FIELDS = ['email']             # email needed for signup
+ACCOUNT_EMAIL_REQUIRED = True                 
 ACCOUNT_EMAIL_VERIFICATION = 'optional'       
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # prints email links to terminal
