@@ -13,8 +13,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Core Deployment Settings
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-#Changed to True
-DEBUG = True
+#Changed to False
+DEBUG = False
 
 ALLOWED_HOSTS = [
     'localhost',
