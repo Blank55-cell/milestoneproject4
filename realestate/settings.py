@@ -125,7 +125,8 @@ STORAGES = {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        # Changed from CompressedManifestStaticFilesStorage to stop the 500 crashes
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
