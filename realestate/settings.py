@@ -13,8 +13,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Core Deployment Settings
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-#Changed to false to simplify things will do same on railway
-DEBUG = False
+#Changed to True
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
