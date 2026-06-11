@@ -121,8 +121,8 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_FINDERS = [
-    'django.contrib.staticfiles.finders.FileSystemFinder',          # searches for assets inside your main root static folder
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',      # sweeps individual app directories to collect third-party styles like allauth
+    'django.contrib.staticfiles.finders.FileSystemFinder',          
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',      
 ]
 
 STORAGES = {
@@ -147,3 +147,9 @@ ACCOUNT_LOGIN_METHODS = {'email'}             # login using email instead of use
 ACCOUNT_SIGNUP_FIELDS = ['email*']            # explicit mandatory email requirement for registration forms
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'      # requires users to verify their email address before they can log in
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # prints email signup links safely to the terminal logs
+
+
+
+# Redirect routes after logging in or out
+LOGIN_REDIRECT_URL = 'account_dashboard'
+ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
