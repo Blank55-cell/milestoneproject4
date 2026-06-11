@@ -1,1 +1,1 @@
-web: /app/.venv/bin/python manage.py migrate && /app/.venv/bin/python manage.py collectstatic --noinput && gunicorn realestate.wsgi:application
+web: python manage.py migrate && gunicorn realestate.wsgi:application
