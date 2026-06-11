@@ -84,17 +84,23 @@ http://127.0.0.1:8000
 
 ---
 
-# Tools (Work in Progress)
+# Tools & Technologies Used
 
- These are the tools and features I plan to build, based on what I used in Project 3:
+# Tools & Technologies Used
 
-- Property listing system  
-- User favourites (similar to saved books in Project 3)  
-- Search and filtering for properties  
-- Stripe checkout for booking fees  
-- Notes / extra info section for each property  
-- Image gallery for property photos  
-- Admin tools for adding and editing listings  
+### Core Stack
+- **Backend Framework:** Django 6 (Python)
+- **Frontend:** HTML5, CSS3, JavaScript (ES6+)
+- **Hosting & Deployment:** Railway
+- **Database:** PostgreSQL (Production via Railway) / SQLite (Local Development)
+- **Third-Party APIs:** - RentCast API (Real-time property data and metrics integration)
+  - Stripe API (Configured for future secure booking checkout processing)
+
+### Code Validation & Quality Control
+- **Nu HTML Checker:** Used to validate HTML templates and ensure proper semantic markup.
+- **JSLint / JSHint:** Used for JavaScript quality checks, catching syntax slips, and standardizing frontend code.
+- **PEP8 Guidelines:** Followed across all Python modules to keep the backend uniform and readable.
+- **Version Control:** Git and GitHub for branch management and project history.
 
 ---
 
@@ -106,12 +112,17 @@ Anyone who wants a simple way to browse properties without dealing with cluttere
 
 # Pages Used in This Project
 
-- home.html – Landing page with featured properties  
-- listings.html – Shows all properties  
-- property_details.html – Full details for a selected property  
-- account.html – Login and registration  
-- checkout.html – Stripe payment page  
-- success.html – Payment confirmation  
+### Core Application Templates
+- **home.html** – Landing page with featured properties.
+- **listings.html** – Shows all searchable property listings.
+- **property_details.html** – Full detailed overview for a selected property.  
+- **checkout.html** – Stripe payment handling page.  
+- **success.html** – Payment confirmation window. 
+
+### Authentication Templates (Django Allauth Overrides)
+- **templates/account/login.html** – Custom user login form.
+- **templates/account/signup.html** – Custom new user registration setup.
+- **templates/account/email_verification_sent.html** – Screen prompting users to confirm their email verification link. 
 
 ---
 

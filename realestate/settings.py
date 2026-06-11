@@ -146,8 +146,16 @@ RENTCAST_API_KEY = os.environ.get('RENTCAST_API_KEY', '')
 ACCOUNT_LOGIN_METHODS = {'email'}             # login using email instead of username (implicitly makes email required)
 ACCOUNT_SIGNUP_FIELDS = ['email*']            # explicit mandatory email requirement for registration forms
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'      # requires users to verify their email address before they can log in
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # prints email signup links safely to the terminal logs
 
+
+# Email Configuration (Brevo SMTP)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp-relay.brevo.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = 'noreply@yourdomain.com'
 
 
 # Redirect routes after logging in or out
