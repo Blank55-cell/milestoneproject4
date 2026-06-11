@@ -73,10 +73,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-            
-            'builtins': [
-                'django.contrib.staticfiles.templatetags.staticfiles',
-            ],
         },
     },
 ]
@@ -124,6 +120,11 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',          # searches for assets inside your main root static folder
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',      # sweeps individual app directories to collect third-party styles like allauth
+]
+
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
@@ -133,7 +134,6 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
-
 
 # Keys and auth setup
 
