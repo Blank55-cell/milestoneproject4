@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="checkout-box">
+    <h2>Sign In</h2>
+    <p>Please log into your account to access your dashboard.</p>
+
+    <form method="POST" action="{% url 'account_login' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn" style="width: 100%; margin-top: 15px;">Sign In</button>
+    </form>
+
+    <p style="margin-top: 15px; font-size: 0.9rem; color: #666;">
+        New to the site? <a href="{% url 'account_signup' %}" style="color: #007bff; font-weight: 600;">Create an account</a>
+    </p>
+</div>
+{% endblock %}
