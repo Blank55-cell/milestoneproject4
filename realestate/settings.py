@@ -6,7 +6,7 @@ Configured for production deployment on Railway.
 
 import os
 from pathlib import Path
-import dj_database_url  # New import for parsing database URLs 
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'realestate.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600  # Keeps connections alive for faster page loads
+        conn_max_age=600
     )
 }
 
@@ -158,9 +158,7 @@ EMAIL_USE_SSL = False
 EMAIL_TIMEOUT = 15
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-
-# FIX SUMMARY: Dynamically defaults to your SMTP username if DEFAULT_FROM_EMAIL variable is empty
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL') or os.environ.get('EMAIL_HOST_USER')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'carlosalba101@proton.me')
 
 
 # Redirect routes after logging in or out
