@@ -13,7 +13,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Core Deployment Settings
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-
 DEBUG = False
 
 ALLOWED_HOSTS = [
@@ -130,7 +129,6 @@ STORAGES = {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        # Changed from CompressedManifestStaticFilesStorage to stop the 500 crashes
         "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
@@ -144,8 +142,9 @@ STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
 RENTCAST_API_KEY = os.environ.get('RENTCAST_API_KEY', '')
 
 # Allauth configuration
-ACCOUNT_LOGIN_METHODS = {'email'}             # login using email instead of username (implicitly makes email required)
+ACCOUNT_LOGIN_METHODS = {'email'}             # login using email instead of username
 ACCOUNT_SIGNUP_FIELDS = ['email*']            # explicit mandatory email requirement for registration forms
+ACCOUNT_EMAIL_REQUIRED = True                 # FIX: Explicitly enforce registration email capture fields
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'      # requires users to verify their email address before they can log in
 
 
@@ -158,7 +157,7 @@ EMAIL_USE_SSL = False
 EMAIL_TIMEOUT = 15
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
 
 
 # Redirect routes after logging in or out
