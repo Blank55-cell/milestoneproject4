@@ -11,7 +11,6 @@ def sync_rentcast_properties():
     if response.status_code == 200:
         data = response.json()
         for item in data:
-            # This saves the data into your DB so your view can find it
             Property.objects.update_or_create(
                 id=item.get('id'),
                 defaults={
