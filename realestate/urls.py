@@ -20,11 +20,15 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    # Django Admin site
     path('admin/', admin.site.urls),
-    path('', include('listings.urls')),            
-    path('accounts/', include('allauth.urls')),   
+
+    # App routing
+    path('', include('listings.urls')),             # Property list, details, and stripe checkout
+    path('dashboard/', include('accounts.urls')),   # Custom user profile and accounts section
+    path('accounts/', include('allauth.urls')),     # Django-allauth signup/login routes
 ]
 
-# Ensures Django hands off static file requests to WhiteNoise when DEBUG is False
+# Static files fix for deployment (WhiteNoise handling)
 if not settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

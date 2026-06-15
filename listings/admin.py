@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Property, Booking
+from .models import Property, Deposit
 
 @admin.register(Property)
 class PropertyAdmin(admin.ModelAdmin):
@@ -7,8 +7,8 @@ class PropertyAdmin(admin.ModelAdmin):
     list_filter = ('is_featured', 'bedrooms', 'bathrooms')
     search_fields = ('title', 'location')
 
-@admin.register(Booking)
-class BookingAdmin(admin.ModelAdmin):
-    list_display = ('user', 'property', 'booking_date', 'paid')
-    list_filter = ('paid', 'booking_date')
+@admin.register(Deposit)
+class DepositAdmin(admin.ModelAdmin):
+    list_display = ('user', 'property', 'amount', 'paid', 'is_refunded', 'created_at')
+    list_filter = ('paid', 'is_refunded', 'created_at')
     search_fields = ('user__username', 'property__title', 'stripe_payment_id')

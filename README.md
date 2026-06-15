@@ -78,7 +78,7 @@ http://127.0.0.1:8000
 - As a user, I want to browse properties so I can see what’s available.  
 - I want to click into a property to view more details.  
 - I want to create an account so I can save properties I like.  
-- I want to pay booking fees securely using Stripe.  
+- i want to be able pay a deposit after already having viewed a  a property securely using Stripe.  
 - I want a simple layout so I can move around the site easily.  
 - I want to remove saved properties when I no longer need them.
 

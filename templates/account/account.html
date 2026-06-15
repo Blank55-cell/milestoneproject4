@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="messages-container" style="margin-top: 40px;">
+    <div class="dashboard-wide-box" style="text-align: left; margin-bottom: 30px;">
+        <h2>User Dashboard</h2>
+        <p style="margin: 10px 0 5px 0;"><strong>Username:</strong> {{ user.username }}</p>
+        <p style="margin: 5px 0 15px 0;"><strong>Email:</strong> {{ user.email }}</p>
+        <a href="{% url 'account_logout' %}" class="logout-link">Sign Out</a>
+    </div>
+
+    <div class="dashboard-wide-box">
+        <h3 style="text-align: left; margin-top: 0;">🔒 Your Secured Holding Deposits</h3>
+        
+        {% if deposits %}
+            <div class="dashboard-grid">
+                {% for deposit in deposits %}
+                    <div class="deposit-item">
+                        <h4 style="margin: 0 0 5px 0; color: var(--text-main);">{{ deposit.property.title }}</h4>
+                        <p style="margin: 0 0 15px 0; color: var(--text-light); font-size: 0.95rem;">📍 {{ deposit.property.location }}</p>
+                        
+                        <p style="margin: 5px 0; font-size: 0.95rem;"><strong>Deposit Paid:</strong> £{{ deposit.amount }}</p>
+                        <p style="margin: 5px 0 15px 0; font-size: 0.95rem;"><strong>Date Secured:</strong> {{ deposit.created_at|date:"d M Y" }}</p>
+                        
+                        <span class="badge-success">Paid & Secured</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p style="color: var(--text-light); text-align: left; margin-bottom: 15px;">You haven't placed a holding deposit on any properties yet.</p>
+            <div style="text-align: left;">
+                <a href="{% url 'listings' %}" class="btn">Browse Listings</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

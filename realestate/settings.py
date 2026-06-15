@@ -139,6 +139,7 @@ STORAGES = {
 
 # Keys from Railway variables
 STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', '')
+STRIPE_PUBLIC_KEY = os.environ.get('STRIPE_PUBLIC_KEY') or STRIPE_PUBLISHABLE_KEY
 STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
 RENTCAST_API_KEY = os.environ.get('RENTCAST_API_KEY', '')
 
@@ -161,5 +162,5 @@ DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER')
 
 
 # Redirect routes after logging in or out
-LOGIN_REDIRECT_URL = 'account_dashboard'
+LOGIN_REDIRECT_URL = 'account'
 ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
