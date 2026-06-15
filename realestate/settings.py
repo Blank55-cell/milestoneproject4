@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 import dj_database_url
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Builds paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Core Deployment Settings
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'listings',
+    'accounts',
 ]
 
 SITE_ID = 1
@@ -143,18 +144,16 @@ STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
 RENTCAST_API_KEY = os.environ.get('RENTCAST_API_KEY', '')
 
 # Allauth configuration
-ACCOUNT_LOGIN_METHODS = {'email'}            # Kept strictly to 'email' to prevent startup crashes
-ACCOUNT_SIGNUP_FIELDS = ['email*']            # explicit mandatory email requirement for registration forms
-ACCOUNT_EMAIL_REQUIRED = True                 # Explicitly enforce registration email capture fields
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'      # requires users to verify their email address before they can log in
-
+ACCOUNT_AUTHENTICATION_METHOD = 'email' 
+ACCOUNT_EMAIL_REQUIRED = True 
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True 
 
 # Email Configuration (Brevo SMTP)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp-relay.brevo.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
 EMAIL_TIMEOUT = 15
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
@@ -162,5 +161,5 @@ DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'carlosalba101@proton.
 
 
 # Redirect routes after logging in or out
-LOGIN_REDIRECT_URL = 'account'
+LOGIN_REDIRECT_URL = 'account_dashboard'
 ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
