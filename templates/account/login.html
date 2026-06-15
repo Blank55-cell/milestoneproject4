@@ -7,12 +7,39 @@
 
     <form method="POST" action="{% url 'account_login' %}">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn" style="width: 100%; margin-top: 15px;">Sign In</button>
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <p>
+            <label for="{{ form.login.id_for_label }}">Email Address:</label>
+            <input type="email" name="login" id="{{ form.login.id_for_label }}" placeholder="name@example.com" required>
+            {% if form.login.errors %}
+                <span class="alert-error">{{ form.login.errors }}</span>
+            {% endif %}
+        </p>
+
+        <p>
+            <label for="id_password">Password:</label>
+            <input type="password" name="password" id="id_password" placeholder="Password" required>
+            {% if form.password.errors %}
+                <span class="alert-error">{{ form.password.errors }}</span>
+            {% endif %}
+        </p>
+
+        <p>
+            {{ form.remember }} 
+            <label for="{{ form.remember.id_for_label }}">Remember Me</label>
+        </p>
+
+        <button type="submit" class="btn">Sign In</button>
     </form>
 
-    <p style="margin-top: 15px; font-size: 0.9rem; color: #666;">
-        New to the site? <a href="{% url 'account_signup' %}" style="color: #007bff; font-weight: 600;">Create an account</a>
+    <p>
+        New to the site? <a href="{% url 'account_signup' %}">Create an account</a>
     </p>
 </div>
 {% endblock %}

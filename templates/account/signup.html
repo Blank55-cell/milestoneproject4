@@ -7,12 +7,42 @@
 
     <form method="POST" action="{% url 'account_signup' %}">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn" style="width: 100%; margin-top: 15px;">Register</button>
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <p>
+            <label for="id_email">Email Address:</label>
+            <input type="email" name="email" id="id_email" placeholder="name@example.com" required>
+            {% if form.email.errors %}
+                <span class="alert-error">{{ form.email.errors }}</span>
+            {% endif %}
+        </p>
+
+        <p>
+            <label for="id_password1">Password:</label>
+            <input type="password" name="password1" id="id_password1" placeholder="Choose Password" required>
+            {% if form.password1.errors %}
+                <span class="alert-error">{{ form.password1.errors }}</span>
+            {% endif %}
+        </p>
+
+        <p>
+            <label for="id_password2">Confirm Password:</label>
+            <input type="password" name="password2" id="id_password2" placeholder="Repeat Password" required>
+            {% if form.password2.errors %}
+                <span class="alert-error">{{ form.password2.errors }}</span>
+            {% endif %}
+        </p>
+
+        <button type="submit" class="btn">Register</button>
     </form>
 
-    <p style="margin-top: 15px; font-size: 0.9rem; color: #666;">
-        Already have an account? <a href="{% url 'account_login' %}" style="color: #007bff; font-weight: 600;">Sign In</a>
+    <p>
+        Already have an account? <a href="{% url 'account_login' %}">Sign In</a>
     </p>
 </div>
 {% endblock %}

@@ -142,9 +142,9 @@ STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
 RENTCAST_API_KEY = os.environ.get('RENTCAST_API_KEY', '')
 
 # Allauth configuration
-ACCOUNT_LOGIN_METHODS = {'email', 'password'} # FIX: Re-instated 'password' to bring back password fields
+ACCOUNT_LOGIN_METHODS = {'email'}            # Kept strictly to 'email' to prevent startup crashes
 ACCOUNT_SIGNUP_FIELDS = ['email*']            # explicit mandatory email requirement for registration forms
-ACCOUNT_EMAIL_REQUIRED = True                 # FIX: Explicitly enforce registration email capture fields
+ACCOUNT_EMAIL_REQUIRED = True                 # Explicitly enforce registration email capture fields
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'      # requires users to verify their email address before they can log in
 
 
@@ -157,7 +157,9 @@ EMAIL_USE_SSL = False
 EMAIL_TIMEOUT = 15
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
+
+# FIX SUMMARY: Dynamically defaults to your SMTP username if DEFAULT_FROM_EMAIL variable is empty
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL') or os.environ.get('EMAIL_HOST_USER')
 
 
 # Redirect routes after logging in or out
