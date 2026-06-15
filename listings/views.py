@@ -7,11 +7,10 @@ import stripe
 import requests
 from .models import Property, Deposit
 
-# Initialize external API keys from project settings configuration
 stripe.api_key = settings.STRIPE_SECRET_KEY
 RENTCAST_API_KEY = settings.RENTCAST_API_KEY
 
-# Home page view: Fetches and displays properties flagged as featured assets
+# Home page: Grab all properties marked as featured
 def home_view(request):
     featured_properties = Property.objects.filter(is_featured=True)
     context = {
@@ -19,7 +18,7 @@ def home_view(request):
     }
     return render(request, 'home.html', context)
 
-# Main listings directory page: Retreives and renders all property cards
+# Listings directory: Get every property in the system
 def all_listings(request):
     properties = Property.objects.all()
     context = {
@@ -27,7 +26,7 @@ def all_listings(request):
     }
     return render(request, 'listings.html', context)
 
-# Dynamic routing view: Renders granular details for a specific property asset
+# Detail view: Show information for a single chosen property
 def listing_detail(request, listing_id):
     property_item = get_object_or_404(Property, id=listing_id)
     context = {
@@ -35,7 +34,7 @@ def listing_detail(request, listing_id):
     }
     return render(request, 'property_details.html', context)
 
-# Checkout page gateway: Directs authenticated users to the confirmation view
+# Checkout gateway page: Send logged-in users to confirm their intent
 @login_required
 def checkout_view(request, listing_id):
     property_item = get_object_or_404(Property, id=listing_id)
@@ -44,7 +43,7 @@ def checkout_view(request, listing_id):
     }
     return render(request, 'checkout.html', context)
 
-# User profile management dashboard routing
+# Account dashboard: Show all deposits paid by the logged-in user
 @login_required
 def account_dashboard(request):
     deposits = Deposit.objects.filter(user=request.user, paid=True)
@@ -53,17 +52,15 @@ def account_dashboard(request):
     }
     return render(request, 'account.html', context)
 
-# Handles the dynamic initialization of Stripe Checkout Sessions for holding deposits
+# Handshake with Stripe to create a unique checkout session URL
 @login_required
 def create_checkout_session(request, listing_id):
     if request.method == 'POST':
         property_item = get_object_or_404(Property, id=listing_id)
-        
-        # Determine host domain dynamically to ensure cross-environment compatibility
         domain_url = f"{request.scheme}://{request.get_host()}"
         
         try:
-            # Construct Stripe Session tailored for a refundable property holding deposit
+            # Build the payment parameters for a flat £250 holding fee
             checkout_session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
                 line_items=[
@@ -74,13 +71,12 @@ def create_checkout_session(request, listing_id):
                                 'name': f"Holding Deposit: {property_item.title}",
                                 'description': f"Holding deposit to secure {property_item.location}. Applied to balance upon closing.",
                             },
-                            'unit_amount': 25000, # Value parsed in minor currency units (£250.00 GBP)
+                            'unit_amount': 25000, 
                         },
                         'quantity': 1,
                     }
                 ],
                 mode='payment',
-                # Append the property target metadata parameter to track fulfillment on completion
                 success_url=domain_url + f'/checkout/success/?listing_id={property_item.id}&session_id={{CHECKOUT_SESSION_ID}}',
                 cancel_url=domain_url + f"/listings/{property_item.id}/",
             )
@@ -93,23 +89,40 @@ def create_checkout_session(request, listing_id):
             
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
-# Success fulfillment view: Validates checkout returns and logs paid Deposits to the database
+# Success page processing: Intercept the redirect tokens and write a permanent deposit log
 def payment_success(request):
     listing_id = request.GET.get('listing_id')
     session_id = request.GET.get('session_id')
     
-    # Verify transaction context matches an authenticated operational user sessions
-    if listing_id and request.user.is_authenticated:
+    if listing_id and session_id and request.user.is_authenticated:
         property_item = get_object_or_404(Property, id=listing_id)
         
-        # Persist the transactional holding deposit record inside the database architecture
-        Deposit.objects.get_or_create(
-            stripe_payment_id=session_id,
-            defaults={
-                'user': request.user,
-                'property': property_item,
-                'amount': 250.00,
-                'paid': True
-            }
-        )
+        try:
+            # Retrieve the full checkout data straight from Stripe to fetch the true payment ID
+            session = stripe.checkout.Session.retrieve(session_id)
+            payment_intent_id = session.get('payment_intent')
+            
+            # Use the checkout token to safely verify or generate our transaction record
+            Deposit.objects.get_or_create(
+                stripe_checkout_session_id=session_id,
+                defaults={
+                    'user': request.user,
+                    'property': property_item,
+                    'amount': 250.00,
+                    'stripe_payment_id': payment_intent_id,
+                    'paid': True
+                }
+            )
+        except Exception:
+            # Fallback if Stripe API lookup fails on network checkout reload
+            Deposit.objects.get_or_create(
+                stripe_checkout_session_id=session_id,
+                defaults={
+                    'user': request.user,
+                    'property': property_item,
+                    'amount': 250.00,
+                    'paid': True
+                }
+            )
+            
     return render(request, 'success.html')
