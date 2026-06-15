@@ -1,14 +1,40 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt 
 from django.conf import settings
+from django.contrib import messages
 import stripe
 import requests
 from .models import Property, Deposit
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
-RENTCAST_API_KEY = settings.RENTCAST_API_KEY
+
+# Manually trigger this via /sync/ to pull fresh data from RentCast
+def sync_rentcast_properties(request):
+    url = "https://api.rentcast.io/v1/listings/listings"
+    headers = {"accept": "application/json", "X-Api-Key": settings.RENTCAST_API_KEY}
+    
+    try:
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            data = response.json()
+            for item in data:
+                # Using update_or_create to keep local data fresh without duplicates
+                Property.objects.update_or_create(
+                    id=item.get('id'), 
+                    defaults={
+                        'title': item.get('formattedAddress'),
+                        'price': item.get('price'),
+                    }
+                )
+            messages.success(request, "Sync complete!")
+        else:
+            messages.error(request, f"Sync failed with code: {response.status_code}")
+    except Exception as e:
+        messages.error(request, f"Sync error: {str(e)}")
+        
+    return redirect('listings')
 
 # Home page: Grab all properties marked as featured
 def home_view(request):
