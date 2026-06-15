@@ -2,12 +2,15 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Property(models.Model):
+    # Added to track API records and prevent duplicates
+    rentcast_id = models.CharField(max_length=100, unique=True, null=True, blank=True)
+    
     title = models.CharField(max_length=200)
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True) # Set to blank=True to handle API data gracefully
     location = models.CharField(max_length=200)
-    price = models.DecimalField(max_digits=12, decimal_places=2)  # Changed to DecimalField for consistent financial tracking
-    bedrooms = models.IntegerField()
-    bathrooms = models.IntegerField()
+    price = models.DecimalField(max_digits=12, decimal_places=2)
+    bedrooms = models.IntegerField(null=True, blank=True)
+    bathrooms = models.IntegerField(null=True, blank=True)
     is_featured = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -22,7 +25,7 @@ class Deposit(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='deposits')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     stripe_payment_id = models.CharField(max_length=250, blank=True, null=True)
-    stripe_checkout_session_id = models.CharField(max_length=250, blank=True, null=True)  # Useful for webhook checks
+    stripe_checkout_session_id = models.CharField(max_length=250, blank=True, null=True)
     paid = models.BooleanField(default=False)
     is_refunded = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

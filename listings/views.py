@@ -20,9 +20,9 @@ def sync_rentcast_properties(request):
         if response.status_code == 200:
             data = response.json()
             for item in data:
-                # Using update_or_create to keep local data fresh without duplicates
+                # We use a specific rentcast_id field to prevent PK conflicts
                 Property.objects.update_or_create(
-                    id=item.get('id'), 
+                    rentcast_id=item.get('id'), 
                     defaults={
                         'title': item.get('formattedAddress'),
                         'price': item.get('price'),
@@ -60,7 +60,7 @@ def listing_detail(request, listing_id):
     }
     return render(request, 'property_details.html', context)
 
-# Checkout gateway page: Send logged-in users to confirm their intent
+# Checkout gateway page
 @login_required
 def checkout_view(request, listing_id):
     property_item = get_object_or_404(Property, id=listing_id)
@@ -69,7 +69,7 @@ def checkout_view(request, listing_id):
     }
     return render(request, 'checkout.html', context)
 
-# Account dashboard: Show all deposits paid by the logged-in user
+# Account dashboard
 @login_required
 def account_dashboard(request):
     deposits = Deposit.objects.filter(user=request.user, paid=True)
@@ -78,7 +78,7 @@ def account_dashboard(request):
     }
     return render(request, 'account.html', context)
 
-# Handshake with Stripe to create a unique checkout session URL
+# Handshake with Stripe
 @login_required
 def create_checkout_session(request, listing_id):
     if request.method == 'POST':
@@ -86,36 +86,30 @@ def create_checkout_session(request, listing_id):
         domain_url = f"{request.scheme}://{request.get_host()}"
         
         try:
-            # Build the payment parameters for a flat £250 holding fee
             checkout_session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
-                line_items=[
-                    {
-                        'price_data': {
-                            'currency': 'gbp',
-                            'product_data': {
-                                'name': f"Holding Deposit: {property_item.title}",
-                                'description': f"Holding deposit to secure {property_item.location}. Applied to balance upon closing.",
-                            },
-                            'unit_amount': 25000, 
+                line_items=[{
+                    'price_data': {
+                        'currency': 'gbp',
+                        'product_data': {
+                            'name': f"Holding Deposit: {property_item.title}",
+                            'description': f"Holding deposit for {property_item.title}.",
                         },
-                        'quantity': 1,
-                    }
-                ],
+                        'unit_amount': 25000, 
+                    },
+                    'quantity': 1,
+                }],
                 mode='payment',
                 success_url=domain_url + f'/checkout/success/?listing_id={property_item.id}&session_id={{CHECKOUT_SESSION_ID}}',
                 cancel_url=domain_url + f"/listings/{property_item.id}/",
             )
-            return JsonResponse({
-                'id': checkout_session.id,
-                'stripe_public_key': settings.STRIPE_PUBLIC_KEY
-            })
+            return JsonResponse({'id': checkout_session.id, 'stripe_public_key': settings.STRIPE_PUBLIC_KEY})
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
             
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
-# Success page processing: Intercept the redirect tokens and write a permanent deposit log
+# Success page processing
 def payment_success(request):
     listing_id = request.GET.get('listing_id')
     session_id = request.GET.get('session_id')
@@ -124,11 +118,8 @@ def payment_success(request):
         property_item = get_object_or_404(Property, id=listing_id)
         
         try:
-            # Retrieve the full checkout data straight from Stripe to fetch the true payment ID
             session = stripe.checkout.Session.retrieve(session_id)
             payment_intent_id = session.get('payment_intent')
-            
-            # Use the checkout token to safely verify or generate our transaction record
             Deposit.objects.get_or_create(
                 stripe_checkout_session_id=session_id,
                 defaults={
@@ -140,7 +131,6 @@ def payment_success(request):
                 }
             )
         except Exception:
-            # Fallback if Stripe API lookup fails on network checkout reload
             Deposit.objects.get_or_create(
                 stripe_checkout_session_id=session_id,
                 defaults={

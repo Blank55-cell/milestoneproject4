@@ -8,9 +8,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # App routing
-    path('', include('listings.urls')),            # Property list, details, and stripe checkout
     path('account/', include('accounts.urls')),    # Custom user profile and accounts section
     path('accounts/', include('allauth.urls')),    # Django-allauth signup/login routes
+    path('', include('listings.urls')),            # Property list, details, and stripe checkout
 ]
 
 if not settings.DEBUG:
