@@ -10,17 +10,31 @@ from .models import Property, Deposit
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-# Manually trigger this via /sync/ to pull fresh data from RentCast
 def sync_rentcast_properties(request):
-    url = "https://api.rentcast.io/v1/listings/listings"
-    headers = {"accept": "application/json", "X-Api-Key": settings.RENTCAST_API_KEY}
+    url = "https://api.rentcast.io/v1/listings/rental/long-term"
     
+    # Safely get API key for debugging
+    api_key = settings.RENTCAST_API_KEY
+    key_preview = (api_key or "MISSING")[:5] if api_key else "MISSING"
+    print(f"DEBUG: Requesting {url} with key starting: {key_preview}")
+    
+    headers = {"accept": "application/json", "X-Api-Key": api_key}
+    params = {"city": "Manchester", "state": "England", "limit": 50}
+
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, params=params)
+        print(f"DEBUG: RentCast Response Status: {response.status_code}")
+        
         if response.status_code == 200:
-            data = response.json()
-            for item in data:
-                # We use a specific rentcast_id field to prevent PK conflicts
+            response_data = response.json()
+            
+            # Defensive check: handles both raw list or wrapped data/listings keys
+            if isinstance(response_data, list):
+                listings = response_data
+            else:
+                listings = response_data.get('data', response_data.get('listings', []))
+            
+            for item in listings:
                 Property.objects.update_or_create(
                     rentcast_id=item.get('id'), 
                     defaults={
@@ -28,54 +42,46 @@ def sync_rentcast_properties(request):
                         'price': item.get('price'),
                     }
                 )
-            messages.success(request, "Sync complete!")
+            messages.success(request, f"Sync complete! Processed {len(listings)} items.")
         else:
             messages.error(request, f"Sync failed with code: {response.status_code}")
+            print(f"DEBUG: Error Body: {response.text}")
     except Exception as e:
         messages.error(request, f"Sync error: {str(e)}")
+        print(f"DEBUG: Exception caught: {str(e)}")
         
     return redirect('listings')
 
 # Home page: Grab all properties marked as featured
 def home_view(request):
     featured_properties = Property.objects.filter(is_featured=True)
-    context = {
-        'featured_properties': featured_properties
-    }
+    context = {'featured_properties': featured_properties}
     return render(request, 'home.html', context)
 
 # Listings directory: Get every property in the system
 def all_listings(request):
     properties = Property.objects.all()
-    context = {
-        'properties': properties
-    }
+    context = {'properties': properties}
     return render(request, 'listings.html', context)
 
 # Detail view: Show information for a single chosen property
 def listing_detail(request, listing_id):
     property_item = get_object_or_404(Property, id=listing_id)
-    context = {
-        'property': property_item
-    }
+    context = {'property': property_item}
     return render(request, 'property_details.html', context)
 
 # Checkout gateway page
 @login_required
 def checkout_view(request, listing_id):
     property_item = get_object_or_404(Property, id=listing_id)
-    context = {
-        'property': property_item
-    }
+    context = {'property': property_item}
     return render(request, 'checkout.html', context)
 
 # Account dashboard
 @login_required
 def account_dashboard(request):
     deposits = Deposit.objects.filter(user=request.user, paid=True)
-    context = {
-        'deposits': deposits
-    }
+    context = {'deposits': deposits}
     return render(request, 'account.html', context)
 
 # Handshake with Stripe
@@ -86,6 +92,9 @@ def create_checkout_session(request, listing_id):
         domain_url = f"{request.scheme}://{request.get_host()}"
         
         try:
+            # Using int(property_item.price * 100) for dynamic pricing
+            unit_amount = int(property_item.price * 100) if property_item.price else 25000
+            
             checkout_session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
                 line_items=[{
@@ -95,7 +104,7 @@ def create_checkout_session(request, listing_id):
                             'name': f"Holding Deposit: {property_item.title}",
                             'description': f"Holding deposit for {property_item.title}.",
                         },
-                        'unit_amount': 25000, 
+                        'unit_amount': unit_amount, 
                     },
                     'quantity': 1,
                 }],
