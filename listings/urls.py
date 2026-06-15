@@ -11,7 +11,4 @@ urlpatterns = [
     path('checkout/<int:listing_id>/', views.checkout_view, name='checkout_view'),
     path('checkout/session/<int:listing_id>/', views.create_checkout_session, name='create_checkout_session'),
     path('checkout/success/', views.payment_success, name='payment_success'),
-
-    # New sync endpoint to populate the database
-    path('sync/', views.sync_rentcast_properties, name='sync_properties'),
 ]

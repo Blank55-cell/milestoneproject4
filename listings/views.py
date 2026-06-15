@@ -1,56 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt 
 from django.conf import settings
 from django.contrib import messages
 import stripe
-import requests
 from .models import Property, Deposit
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
-
-def sync_rentcast_properties(request):
-    url = "https://api.rentcast.io/v1/listings/rental/long-term"
-    
-    # Safely get API key for debugging
-    api_key = settings.RENTCAST_API_KEY
-    key_preview = (api_key or "MISSING")[:5] if api_key else "MISSING"
-    print(f"DEBUG: Requesting {url} with key starting: {key_preview}")
-    
-    headers = {"accept": "application/json", "X-Api-Key": api_key}
-    params = {"city": "Manchester", "state": "England", "limit": 50}
-
-    try:
-        response = requests.get(url, headers=headers, params=params)
-        print(f"DEBUG: RentCast Response Status: {response.status_code}")
-        
-        if response.status_code == 200:
-            response_data = response.json()
-            
-            # Defensive check: handles both raw list or wrapped data/listings keys
-            if isinstance(response_data, list):
-                listings = response_data
-            else:
-                listings = response_data.get('data', response_data.get('listings', []))
-            
-            for item in listings:
-                Property.objects.update_or_create(
-                    rentcast_id=item.get('id'), 
-                    defaults={
-                        'title': item.get('formattedAddress'),
-                        'price': item.get('price'),
-                    }
-                )
-            messages.success(request, f"Sync complete! Processed {len(listings)} items.")
-        else:
-            messages.error(request, f"Sync failed with code: {response.status_code}")
-            print(f"DEBUG: Error Body: {response.text}")
-    except Exception as e:
-        messages.error(request, f"Sync error: {str(e)}")
-        print(f"DEBUG: Exception caught: {str(e)}")
-        
-    return redirect('listings')
 
 # Home page: Grab all properties marked as featured
 def home_view(request):
@@ -90,11 +46,10 @@ def create_checkout_session(request, listing_id):
     if request.method == 'POST':
         property_item = get_object_or_404(Property, id=listing_id)
         domain_url = f"{request.scheme}://{request.get_host()}"
-        
+
         try:
-            # Using int(property_item.price * 100) for dynamic pricing
             unit_amount = int(property_item.price * 100) if property_item.price else 25000
-            
+
             checkout_session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
                 line_items=[{
@@ -104,7 +59,7 @@ def create_checkout_session(request, listing_id):
                             'name': f"Holding Deposit: {property_item.title}",
                             'description': f"Holding deposit for {property_item.title}.",
                         },
-                        'unit_amount': unit_amount, 
+                        'unit_amount': unit_amount,
                     },
                     'quantity': 1,
                 }],
@@ -115,17 +70,17 @@ def create_checkout_session(request, listing_id):
             return JsonResponse({'id': checkout_session.id, 'stripe_public_key': settings.STRIPE_PUBLIC_KEY})
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
-            
+
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 # Success page processing
 def payment_success(request):
     listing_id = request.GET.get('listing_id')
     session_id = request.GET.get('session_id')
-    
+
     if listing_id and session_id and request.user.is_authenticated:
         property_item = get_object_or_404(Property, id=listing_id)
-        
+
         try:
             session = stripe.checkout.Session.retrieve(session_id)
             payment_intent_id = session.get('payment_intent')
@@ -149,5 +104,5 @@ def payment_success(request):
                     'paid': True
                 }
             )
-            
+
     return render(request, 'success.html')

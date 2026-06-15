@@ -22,5 +22,8 @@ urlpatterns = [
     path('', include('listings.urls')),            # Property list, details, and stripe checkout
 ]
 
+# Serve static files and media files
+# This ensures images uploaded via Admin are accessible
 if not settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) 
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

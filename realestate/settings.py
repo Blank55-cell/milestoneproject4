@@ -1,6 +1,5 @@
 """
 Django settings for realestate project.
-
 Configured for production deployment on Railway.
 """
 
@@ -13,7 +12,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Core Deployment Settings
 SECRET_KEY = os.environ.get('SECRET_KEY')
-
 DEBUG = False
 
 ALLOWED_HOSTS = [
@@ -30,7 +28,6 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -80,8 +77,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'realestate.wsgi.application'
 
-
-# Production Database (Switches to PostgreSQL)
+# Production Database
 DATABASES = {
     'default': dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
@@ -89,23 +85,13 @@ DATABASES = {
     )
 }
 
-
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
-
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
@@ -113,18 +99,12 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-
-# Static asset deployment configuration (WhiteNoise)
+# Static and Media
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
+STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-STATICFILES_FINDERS = [
-    'django.contrib.staticfiles.finders.FileSystemFinder',          
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',      
-]
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 STORAGES = {
     "default": {
@@ -135,21 +115,17 @@ STORAGES = {
     },
 }
 
-# Keys and auth setup
-
-# Keys from Railway variables
+# Keys and Stripe
 STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', '')
 STRIPE_PUBLIC_KEY = os.environ.get('STRIPE_PUBLIC_KEY') or STRIPE_PUBLISHABLE_KEY
 STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
-RENTCAST_API_KEY = os.environ.get('RENTCAST_API_KEY', '')
 
-# Allauth configuration
-ACCOUNT_AUTHENTICATION_METHOD = 'email' 
-ACCOUNT_EMAIL_REQUIRED = True 
+# Allauth configuration (Fixed syntax)
+ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True 
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username', 'password1*']
 
-# Email Configuration (Brevo SMTP)
+# Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp-relay.brevo.com'
 EMAIL_PORT = 587
@@ -159,7 +135,6 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'carlosalba101@proton.me')
 
-
-# Redirect routes after logging in or out
+# Redirects
 LOGIN_REDIRECT_URL = 'account_dashboard'
 ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
