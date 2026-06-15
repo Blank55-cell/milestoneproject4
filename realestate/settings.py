@@ -142,7 +142,7 @@ STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
 RENTCAST_API_KEY = os.environ.get('RENTCAST_API_KEY', '')
 
 # Allauth configuration
-ACCOUNT_LOGIN_METHODS = {'email'}             # login using email instead of username
+ACCOUNT_LOGIN_METHODS = {'email', 'password'} # FIX: Re-instated 'password' to bring back password fields
 ACCOUNT_SIGNUP_FIELDS = ['email*']            # explicit mandatory email requirement for registration forms
 ACCOUNT_EMAIL_REQUIRED = True                 # FIX: Explicitly enforce registration email capture fields
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'      # requires users to verify their email address before they can log in
