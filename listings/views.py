@@ -8,11 +8,13 @@ from .models import Property, Deposit
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
+
 # Home page: Grab all properties marked as featured
 def home_view(request):
     featured_properties = Property.objects.filter(is_featured=True)
     context = {'featured_properties': featured_properties}
     return render(request, 'home.html', context)
+
 
 # Listings directory: Get every property in the system
 def all_listings(request):
@@ -20,25 +22,46 @@ def all_listings(request):
     context = {'properties': properties}
     return render(request, 'listings.html', context)
 
+
 # Detail view: Show information for a single chosen property
 def listing_detail(request, listing_id):
     property_item = get_object_or_404(Property, id=listing_id)
-    context = {'property': property_item}
+    is_saved = False
+    saved_count = 0
+
+    if request.user.is_authenticated:
+        from accounts.models import SavedProperty
+        is_saved = SavedProperty.objects.filter(
+            user=request.user, property=property_item
+        ).exists()
+        saved_count = SavedProperty.objects.filter(user=request.user).count()
+
+    context = {
+        'property': property_item,
+        'is_saved': is_saved,
+        'saved_count': saved_count,
+    }
     return render(request, 'property_details.html', context)
+
 
 # Checkout gateway page
 @login_required
 def checkout_view(request, listing_id):
     property_item = get_object_or_404(Property, id=listing_id)
-    context = {'property': property_item}
+    context = {
+        'property': property_item,
+        'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
+    }
     return render(request, 'checkout.html', context)
 
-# Account dashboard
+
+# Account dashboard (kept here for backwards compat but main one is in accounts app)
 @login_required
 def account_dashboard(request):
     deposits = Deposit.objects.filter(user=request.user, paid=True)
     context = {'deposits': deposits}
-    return render(request, 'account.html', context)
+    return render(request, 'account/dashboard.html', context)
+
 
 # Handshake with Stripe
 @login_required
@@ -72,6 +95,7 @@ def create_checkout_session(request, listing_id):
             return JsonResponse({'error': str(e)}, status=400)
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
+
 
 # Success page processing
 def payment_success(request):
