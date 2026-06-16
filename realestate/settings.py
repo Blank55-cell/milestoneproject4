@@ -1,6 +1,6 @@
 """
 Django settings for realestate project.
-Configured for production deployment on Railway using Brevo API.
+Configured for production deployment on Railway.
 """
 
 import os
@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Core Deployment Settings
 SECRET_KEY = os.environ.get('SECRET_KEY')
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -23,6 +23,8 @@ ALLOWED_HOSTS = [
 
 CSRF_TRUSTED_ORIGINS = [
     'https://milestoneproject4-production.up.railway.app',
+    'https://*.railway.app',
+    'https://*.up.railway.app',
 ]
 
 # Application definition
@@ -34,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'anymail', 
+    'anymail',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -43,6 +45,11 @@ INSTALLED_APPS = [
 ]
 
 SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -57,6 +64,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'realestate.urls'
+WSGI_APPLICATION = 'realestate.wsgi.application'
 
 TEMPLATES = [
     {
@@ -74,12 +82,10 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'realestate.wsgi.application'
-
-# Production Database
+# Production Database (Switches to PostgreSQL on Railway)
 DATABASES = {
     'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        default=os.environ.get('DATABASE_URL'),
         conn_max_age=600
     )
 }
@@ -105,6 +111,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# Static asset deployment configuration (WhiteNoise)
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
@@ -114,31 +121,32 @@ STORAGES = {
     },
 }
 
-# Keys and Stripe
+# Keys from Railway variables
 STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', '')
 STRIPE_PUBLIC_KEY = os.environ.get('STRIPE_PUBLIC_KEY') or STRIPE_PUBLISHABLE_KEY
 STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
 
-# Allauth configuration
+# Allauth configuration — using new-style settings only
 ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'username', 'password1*']
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 
-# Email Configuration
+# Email Configuration (Brevo API via anymail)
 EMAIL_BACKEND = "anymail.backends.brevo.EmailBackend"
 ANYMAIL = {
     "BREVO_API_KEY": os.environ.get("BREVO_API_KEY"),
 }
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'carlosalba101@proton.me')
-SERVER_EMAIL = DEFAULT_FROM_EMAIL 
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
-# Redirects
-LOGIN_REDIRECT_URL = 'account_dashboard'
-ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
-
-
-# Force session cookies to be sent over HTTPS
+# Security for Railway
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
-# Ensure sessions are stored in the database correctly
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
+# Redirect routes after logging in or out
+LOGIN_REDIRECT_URL = 'account_dashboard'
+ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
