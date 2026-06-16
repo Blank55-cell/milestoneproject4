@@ -1,18 +1,35 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Checkout — {{ property.title }}{% endblock %}
+
 {% block content %}
 
-<div class="checkout-box">
-    <h1>Secure This Property</h1>
+<div class="checkout-wrapper">
 
-    <p><strong>Property:</strong> {{ property.title }}</p>
-    <p><strong>Location:</strong> {{ property.location }}</p>
-    <p><strong>Holding Deposit:</strong> £250.00</p>
-    
-    <small class="text-muted">This deposit holds the property and will be applied to your balance upon closing.</small>
+    <h1>Holding Deposit</h1>
+    <p>You are about to pay a <strong>£250 holding deposit</strong> for:</p>
 
-    <button id="checkout-button" class="btn" data-listing-id="{{ property.id }}">Pay Holding Deposit (£250)</button>
+    <div class="checkout-summary">
+        {% if property.image_url %}
+            <img src="{{ property.image_url }}" alt="{{ property.title }}">
+        {% else %}
+            <img src="{% static 'images/placeholder.jpg' %}" alt="Placeholder Image">
+        {% endif %}
+
+        <h2>{{ property.title }}</h2>
+        <p>{{ property.location }}</p>
+        <p class="price">Monthly Rent: £{{ property.price }}</p>
+        <p class="deposit-note">Holding deposit: <strong>£250</strong></p>
+    </div>
+
+    <button id="checkout-button" data-listing-id="{{ property.id }}" class="btn">
+        Pay Holding Deposit (£250)
+    </button>
+    <p><a href="{% url 'listing_detail' property.id %}">Cancel and go back</a></p>
+
 </div>
+
+<script src="https://js.stripe.com/v3/"></script>
 
 {% endblock %}

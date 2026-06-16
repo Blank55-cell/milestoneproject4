@@ -27,7 +27,11 @@
         <h3>Bathrooms</h3>
         <p>{{ property.bathrooms }}</p>
 
-        <a href="{% url 'checkout' property.id %}" class="btn">Book Viewing</a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'checkout_view' property.id %}" class="btn">Pay Holding Deposit — £250</a>
+        {% else %}
+            <a href="{% url 'account_login' %}" class="btn">Log in to Pay Deposit</a>
+        {% endif %}
     </div>
 
 </div>
