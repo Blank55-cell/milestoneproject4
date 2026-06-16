@@ -1,37 +1,93 @@
 {% extends 'base.html' %}
 
-{% block content %}
-<div class="messages-container" style="margin-top: 40px;">
-    <div class="dashboard-wide-box" style="text-align: left; margin-bottom: 30px;">
-        <h2>User Dashboard</h2>
-        <p style="margin: 10px 0 5px 0;"><strong>Username:</strong> {{ user.username }}</p>
-        <p style="margin: 5px 0 15px 0;"><strong>Email:</strong> {{ user.email }}</p>
-        <a href="{% url 'account_logout' %}" class="logout-link">Sign Out</a>
-    </div>
+{% block title %}My Dashboard{% endblock %}
 
-    <div class="dashboard-wide-box">
-        <h3 style="text-align: left; margin-top: 0;">🔒 Your Secured Holding Deposits</h3>
-        
-        {% if deposits %}
-            <div class="dashboard-grid">
-                {% for deposit in deposits %}
-                    <div class="deposit-item">
-                        <h4 style="margin: 0 0 5px 0; color: var(--text-main);">{{ deposit.property.title }}</h4>
-                        <p style="margin: 0 0 15px 0; color: var(--text-light); font-size: 0.95rem;">📍 {{ deposit.property.location }}</p>
-                        
-                        <p style="margin: 5px 0; font-size: 0.95rem;"><strong>Deposit Paid:</strong> £{{ deposit.amount }}</p>
-                        <p style="margin: 5px 0 15px 0; font-size: 0.95rem;"><strong>Date Secured:</strong> {{ deposit.created_at|date:"d M Y" }}</p>
-                        
-                        <span class="badge-success">Paid & Secured</span>
+{% block content %}
+
+<div class="dashboard-wrapper">
+    <h1>My Dashboard</h1>
+
+    <!-- Saved Properties -->
+    <section class="dashboard-section">
+        <h2>Saved Properties ({{ saved_count }}/3)</h2>
+
+        {% if saved_properties %}
+            <p>Compare your saved properties below. When ready, pay a holding deposit on your chosen one.</p>
+            <div class="property-grid">
+                {% for saved in saved_properties %}
+                <div class="property-card">
+                    {% if saved.property.image_url %}
+                        <img src="{{ saved.property.image_url }}" alt="{{ saved.property.title }}">
+                    {% else %}
+                        <img src="https://placehold.co/800x500?text=No+Image" alt="No image">
+                    {% endif %}
+
+                    <h3>{{ saved.property.title }}</h3>
+                    <p class="price">£{{ saved.property.price }}/month</p>
+                    <p>{{ saved.property.location }}</p>
+                    <p>{{ saved.property.bedrooms }} bed · {{ saved.property.bathrooms }} bath</p>
+
+                    <div class="card-actions">
+                        <a href="{% url 'listing_detail' saved.property.id %}" class="btn btn-secondary">
+                            View Details
+                        </a>
+                        <a href="{% url 'checkout_view' saved.property.id %}" class="btn">
+                            Pay Deposit
+                        </a>
+                        <form method="POST" action="{% url 'remove_saved' saved.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger"
+                                onclick="return confirm('Remove {{ saved.property.title }} from saved properties?')">
+                                Remove
+                            </button>
+                        </form>
                     </div>
+                </div>
                 {% endfor %}
             </div>
         {% else %}
-            <p style="color: var(--text-light); text-align: left; margin-bottom: 15px;">You haven't placed a holding deposit on any properties yet.</p>
-            <div style="text-align: left;">
-                <a href="{% url 'listings' %}" class="btn">Browse Listings</a>
-            </div>
+            <p>You haven't saved any properties yet.
+                <a href="{% url 'listings' %}">Browse listings</a> to get started.
+            </p>
         {% endif %}
-    </div>
+    </section>
+
+    <!-- Deposit History -->
+    <section class="dashboard-section">
+        <h2>My Deposits</h2>
+
+        {% if deposits %}
+            <table class="deposit-table">
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for deposit in deposits %}
+                    <tr>
+                        <td>{{ deposit.property.title }}</td>
+                        <td>£{{ deposit.amount }}</td>
+                        <td>{{ deposit.created_at|date:"d M Y" }}</td>
+                        <td>
+                            {% if deposit.paid %}
+                                <span class="badge-paid">Paid</span>
+                            {% else %}
+                                <span class="badge-pending">Pending</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No deposits yet. Pay a holding deposit on a saved property to secure your place.</p>
+        {% endif %}
+    </section>
+
 </div>
+
 {% endblock %}

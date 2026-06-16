@@ -30,16 +30,9 @@
             {% endif %}
         </p>
 
-        <p>
-            {{ form.remember }} 
-            <label for="{{ form.remember.id_for_label }}">Remember Me</label>
-        </p>
-
         <button type="submit" class="btn">Sign In</button>
     </form>
 
-    <p>
-        New to the site? <a href="{% url 'account_signup' %}">Create an account</a>
-    </p>
+    <p>New to the site? <a href="{% url 'account_signup' %}">Create an account</a></p>
 </div>
 {% endblock %}
