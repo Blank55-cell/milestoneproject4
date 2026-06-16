@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Property(models.Model):
-    # Removed unique=True to allow multiple blank entries
     rentcast_id = models.CharField(max_length=100, null=True, blank=True)
 
     title = models.CharField(max_length=200)
@@ -12,7 +11,7 @@ class Property(models.Model):
     bedrooms = models.IntegerField(null=True, blank=True)
     bathrooms = models.IntegerField(null=True, blank=True)
     is_featured = models.BooleanField(default=False)
-    image = models.ImageField(upload_to='properties/', blank=True, null=True)
+    image_url = models.URLField(max_length=500, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
