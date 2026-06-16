@@ -23,8 +23,6 @@ ALLOWED_HOSTS = [
 
 CSRF_TRUSTED_ORIGINS = [
     'https://milestoneproject4-production.up.railway.app',
-    'https://*.railway.app',
-    'https://*.up.railway.app',
 ]
 
 # Application definition
@@ -36,7 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'anymail', # Added for Brevo API support
+    'anymail', 
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -126,11 +124,13 @@ ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'username', 'password1*']
 
-# Security Configuration for HTTPS/Railway
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# Security Configuration for Railway
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = True
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
 
-# Email Configuration (Updated for Anymail/Brevo API)
+# Email Configuration
 EMAIL_BACKEND = "anymail.backends.brevo.EmailBackend"
 ANYMAIL = {
     "BREVO_API_KEY": os.environ.get("BREVO_API_KEY"),
