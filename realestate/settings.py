@@ -21,10 +21,6 @@ ALLOWED_HOSTS = [
     '.up.railway.app',
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://milestoneproject4-production.up.railway.app',
-]
-
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -123,12 +119,6 @@ STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
 ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'username', 'password1*']
-
-# Security Configuration for Railway
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = True
-USE_X_FORWARDED_HOST = True
-USE_X_FORWARDED_PORT = True
 
 # Email Configuration
 EMAIL_BACKEND = "anymail.backends.brevo.EmailBackend"
