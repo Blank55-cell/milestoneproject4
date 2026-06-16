@@ -135,3 +135,10 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL
 # Redirects
 LOGIN_REDIRECT_URL = 'account_dashboard'
 ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
+
+
+# Force session cookies to be sent over HTTPS
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+# Ensure sessions are stored in the database correctly
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
