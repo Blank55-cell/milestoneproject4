@@ -15,8 +15,8 @@
         {% endif %}
 
         <p>
-            <label for="{{ form.login.id_for_label }}">Email Address:</label>
-            <input type="email" name="login" id="{{ form.login.id_for_label }}" placeholder="name@example.com" required>
+            <label for="id_login">Email Address:</label>
+            {{ form.login }}
             {% if form.login.errors %}
                 <span class="alert-error">{{ form.login.errors }}</span>
             {% endif %}
@@ -24,7 +24,7 @@
 
         <p>
             <label for="id_password">Password:</label>
-            <input type="password" name="password" id="id_password" placeholder="Password" required>
+            {{ form.password }}
             {% if form.password.errors %}
                 <span class="alert-error">{{ form.password.errors }}</span>
             {% endif %}
