@@ -126,13 +126,17 @@ ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'username', 'password1*']
 
+# Security Configuration for HTTPS/Railway
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+
 # Email Configuration (Updated for Anymail/Brevo API)
 EMAIL_BACKEND = "anymail.backends.brevo.EmailBackend"
 ANYMAIL = {
     "BREVO_API_KEY": os.environ.get("BREVO_API_KEY"),
 }
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'carlosalba101@proton.me')
-SERVER_EMAIL = DEFAULT_FROM_EMAIL # Recommended for error emails
+SERVER_EMAIL = DEFAULT_FROM_EMAIL 
 
 # Redirects
 LOGIN_REDIRECT_URL = 'account_dashboard'
