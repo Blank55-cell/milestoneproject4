@@ -1,82 +1,98 @@
+/*global document, console, fetch, alert, Stripe */
+
 // quick selector helper
-const $ = (selector) => document.querySelector(selector);
+const $ = function (selector) {
+    "use strict";
+    return document.querySelector(selector);
+};
 
 // mobile nav toggle
-const menuBtn = $('#menu-btn');
-const navLinks = $('.nav-links');
+const menuBtn = $("#menu-btn");
+const navLinks = $(".nav-links");
 
 if (menuBtn) {
-    menuBtn.addEventListener('click', () => {
-        navLinks.classList.toggle('open');
+    menuBtn.addEventListener("click", function () {
+        "use strict";
+        if (navLinks) {
+            navLinks.classList.toggle("open");
+        }
     });
 }
 
 // checkout button logic
-const checkoutBtn = $('#checkout-button');
+const checkoutBtn = $("#checkout-button");
 
 if (checkoutBtn) {
-    checkoutBtn.addEventListener('click', async () => {
-        console.log('Checkout clicked'); 
-        
-        // Extract the unique listing ID from our HTML data attribute
-        const listingId = checkoutBtn.getAttribute('data-listing-id');
+    checkoutBtn.addEventListener("click", function () {
+        "use strict";
+        console.log("Checkout clicked");
+
+        const listingId = checkoutBtn.getAttribute("data-listing-id");
         if (!listingId) {
-            console.error('Property listing ID is missing.');
+            console.error("Property listing ID is missing.");
             return;
         }
 
-        // Disable button text during transaction processing to prevent duplicate clicks
         checkoutBtn.disabled = true;
-        checkoutBtn.innerText = 'Redirecting to checkout...';
+        checkoutBtn.innerText = "Redirecting to checkout...";
 
-        try {
-            // Get the CSRF token from the Django cookie so our POST request passes security checks
-            const csrfToken = document.cookie
-                .split('; ')
-                .find(row => row.startsWith('csrftoken='))
-                ?.split('=')[1];
-
-            // Request a secure Stripe checkout session from our Django views backend
-            const response = await fetch(`/checkout/session/${listingId}/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
-                }
+        const cookieRow = document.cookie
+            .split("; ")
+            .find(function (row) {
+                return row.startsWith("csrftoken=");
             });
 
-            const data = await response.json();
-
-            if (data.error) {
-                alert(`Error initializing payment: ${data.error}`);
-                checkoutBtn.disabled = false;
-                checkoutBtn.innerText = 'Pay Holding Deposit (£250)';
-                return;
-            }
-
-            // Dynamically load Stripe's client side library and execute redirection
-            const stripe = Stripe(data.stripe_public_key);
-            await stripe.redirectToCheckout({
-                sessionId: data.id
-            });
-
-        } catch (error) {
-            console.error('Stripe Integration Error:', error);
-            alert('Something went wrong communicating with the server.');
-            checkoutBtn.disabled = false;
-            checkoutBtn.innerText = 'Pay Holding Deposit (£250)';
+        let csrfToken = "";
+        if (cookieRow) {
+            csrfToken = cookieRow.split("=")[1];
         }
+
+        fetch("/checkout/session/" + listingId + "/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
+            }
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                if (data.error) {
+                    alert("Error initializing payment: " + data.error);
+                    checkoutBtn.disabled = false;
+                    checkoutBtn.innerText = "Pay Holding Deposit (£250)";
+                    return;
+                }
+
+                const stripe = Stripe(data.stripe_public_key);
+                stripe.redirectToCheckout({
+                    sessionId: data.id
+                });
+            })
+            .catch(function (error) {
+                console.error("Stripe Integration Error:", error);
+                alert("Something went wrong communicating with the server.");
+                checkoutBtn.disabled = false;
+                checkoutBtn.innerText = "Pay Holding Deposit (£250)";
+            });
     });
 }
 
 // smooth scroll for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(link => {
-    link.addEventListener('click', (e) => {
-        const target = document.querySelector(link.getAttribute('href'));
-        e.preventDefault();
+document.querySelectorAll('a[href^="#"]').forEach(function (link) {
+    "use strict";
+    link.addEventListener("click", function (e) {
+        const targetAttr = link.getAttribute("href");
+        if (targetAttr) {
+            const target = document.querySelector(targetAttr);
+            e.preventDefault();
 
-        if (target) {
-            target.scrollIntoView({ behavior: 'smooth' });
+            if (target) {
+                target.scrollIntoView({
+                    behavior: "smooth"
+                });
+            }
         }
     });
 });
