@@ -1,38 +1,51 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="checkout-box">
+
+<!-- login box -->
+<div class="checkout-box" aria-label="Sign in form">
+
     <h2>Sign In</h2>
     <p>Sign in to view your dashboard and manage your holding deposits.</p>
 
-    <form method="POST" action="{% url 'account_login' %}">
+    <!-- login form -->
+    <form method="POST" action="{% url 'account_login' %}" aria-label="Login form">
         {% csrf_token %}
         
         {% if form.non_field_errors %}
-            <div class="alert alert-error">
+            <div class="alert alert-error" role="alert">
                 {{ form.non_field_errors }}
             </div>
         {% endif %}
 
+        <!-- email field -->
         <p>
             <label for="id_login">Email Address:</label>
             {{ form.login }}
             {% if form.login.errors %}
-                <span class="alert-error">{{ form.login.errors }}</span>
+                <span class="alert-error" role="alert">{{ form.login.errors }}</span>
             {% endif %}
         </p>
 
+        <!-- password field -->
         <p>
             <label for="id_password">Password:</label>
             {{ form.password }}
             {% if form.password.errors %}
-                <span class="alert-error">{{ form.password.errors }}</span>
+                <span class="alert-error" role="alert">{{ form.password.errors }}</span>
             {% endif %}
         </p>
 
-        <button type="submit" class="btn">Sign In</button>
+        <!-- submit button -->
+        <button type="submit" class="btn" aria-label="Sign in to your account">Sign In</button>
     </form>
 
-    <p>New to the site? <a href="{% url 'account_signup' %}">Create an account</a></p>
+    <!-- signup link -->
+    <p>
+        New to the site?
+        <a href="{% url 'account_signup' %}" aria-label="Create a new account">Create an account</a>
+    </p>
+
 </div>
+
 {% endblock %}

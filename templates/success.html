@@ -3,11 +3,14 @@
 
 {% block content %}
 
-<div class="success-box">
+<!-- success message box -->
+<div class="success-box" role="status" aria-live="polite">
     <h1>Payment Complete</h1>
     <p>Your viewing has been booked successfully.</p>
 
-    <a href="/" class="btn">Back to Home</a>
+    <!-- back home button -->
+    <a href="/" class="btn" aria-label="Go back to the homepage">Back to Home</a>
 </div>
 
 {% endblock %}
+

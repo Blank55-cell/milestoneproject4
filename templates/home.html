@@ -3,30 +3,42 @@
 
 {% block content %}
 
-<section class="hero">
+<!-- hero section -->
+<section class="hero" aria-label="Homepage hero section">
     <h1>Find Your Next Home</h1>
     <p>Explore properties available for rent and purchase.</p>
-    <a href="{% url 'listings' %}" class="btn">View Listings</a>
+
+    <!-- link to listings -->
+    <a href="{% url 'listings' %}" class="btn" aria-label="View all property listings">
+        View Listings
+    </a>
 </section>
 
-<section class="featured">
+<!-- featured properties -->
+<section class="featured" aria-label="Featured properties section">
     <h2>Featured Properties</h2>
 
-    <div class="property-grid">
+    <div class="property-grid" role="list" aria-label="Featured property list">
 
         {% for property in featured_properties %}
-        <div class="property-card">
+        <div class="property-card" role="listitem" aria-label="Featured property card">
+
             {% if property.image_url %}
+                <!-- property image -->
                 <img src="{{ property.image_url }}" alt="{{ property.title }}">
             {% else %}
-                <img src="{% static 'images/placeholder.jpg' %}" alt="Placeholder Image">
+                <img src="{% static 'images/placeholder.jpg' %}" alt="Placeholder image for property">
             {% endif %}
             
             <h3>{{ property.title }}</h3>
-            <p class="price">£{{ property.price }}</p>
+            <p class="price" aria-label="Price {{ property.price }} pounds">£{{ property.price }}</p>
             
-            <a href="{% url 'listing_detail' property.id %}" class="btn">View</a>
+            <!-- view button -->
+            <a href="{% url 'listing_detail' property.id %}" class="btn" aria-label="View details for {{ property.title }}">
+                View
+            </a>
         </div>
+
         {% empty %}
         <p>No featured properties at the moment.</p>
         {% endfor %}
@@ -35,3 +47,4 @@
 </section>
 
 {% endblock %}
+

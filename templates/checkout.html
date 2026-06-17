@@ -5,28 +5,40 @@
 
 {% block content %}
 
-<div class="checkout-wrapper">
+<!-- checkout wrapper -->
+<div class="checkout-wrapper" aria-label="Checkout section">
 
     <h1>Holding Deposit</h1>
     <p>You are about to pay a <strong>£250 holding deposit</strong> for:</p>
 
-    <div class="checkout-summary">
+    <!-- property summary -->
+    <div class="checkout-summary" aria-label="Property summary">
         {% if property.image_url %}
             <img src="{{ property.image_url }}" alt="{{ property.title }}">
         {% else %}
-            <img src="{% static 'images/placeholder.jpg' %}" alt="Placeholder Image">
+            <img src="{% static 'images/placeholder.jpg' %}" alt="Placeholder image for property">
         {% endif %}
 
         <h2>{{ property.title }}</h2>
         <p>{{ property.location }}</p>
-        <p class="price">Monthly Rent: £{{ property.price }}</p>
+        <p class="price" aria-label="Monthly rent {{ property.price }} pounds">Monthly Rent: £{{ property.price }}</p>
         <p class="deposit-note">Holding deposit: <strong>£250</strong></p>
     </div>
 
-    <button id="checkout-button" data-listing-id="{{ property.id }}" class="btn">
+    <!-- stripe checkout button -->
+    <button id="checkout-button"
+            data-listing-id="{{ property.id }}"
+            class="btn"
+            aria-label="Pay holding deposit for {{ property.title }}">
         Pay Holding Deposit (£250)
     </button>
-    <p><a href="{% url 'listing_detail' property.id %}">Cancel and go back</a></p>
+
+    <!-- cancel link -->
+    <p>
+        <a href="{% url 'listing_detail' property.id %}" aria-label="Cancel and return to property page">
+            Cancel and go back
+        </a>
+    </p>
 
 </div>
 

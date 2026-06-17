@@ -1,48 +1,78 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="checkout-box">
+
+<!-- signup box -->
+<div class="checkout-box" aria-label="Sign up form">
+
     <h2>Create an Account</h2>
     <p>Sign up to manage your profile and secure properties with holding deposits.</p>
 
-    <form method="POST" action="{% url 'account_signup' %}">
+    <!-- signup form -->
+    <form method="POST" action="{% url 'account_signup' %}" aria-label="Registration form">
         {% csrf_token %}
         
         {% if form.non_field_errors %}
-            <div class="alert alert-error">
+            <div class="alert alert-error" role="alert">
                 {{ form.non_field_errors }}
             </div>
         {% endif %}
 
+        <!-- email field -->
         <p>
             <label for="id_email">Email Address:</label>
-            <input type="email" name="email" id="id_email" placeholder="name@example.com" required>
+            <input type="email"
+                   name="email"
+                   id="id_email"
+                   placeholder="name@example.com"
+                   required
+                   aria-required="true"
+                   aria-label="Enter your email address">
             {% if form.email.errors %}
-                <span class="alert-error">{{ form.email.errors }}</span>
+                <span class="alert-error" role="alert">{{ form.email.errors }}</span>
             {% endif %}
         </p>
 
+        <!-- password field -->
         <p>
             <label for="id_password1">Password:</label>
-            <input type="password" name="password1" id="id_password1" placeholder="Choose Password" required>
+            <input type="password"
+                   name="password1"
+                   id="id_password1"
+                   placeholder="Choose Password"
+                   required
+                   aria-required="true"
+                   aria-label="Enter your password">
             {% if form.password1.errors %}
-                <span class="alert-error">{{ form.password1.errors }}</span>
+                <span class="alert-error" role="alert">{{ form.password1.errors }}</span>
             {% endif %}
         </p>
 
+        <!-- confirm password field -->
         <p>
             <label for="id_password2">Confirm Password:</label>
-            <input type="password" name="password2" id="id_password2" placeholder="Repeat Password" required>
+            <input type="password"
+                   name="password2"
+                   id="id_password2"
+                   placeholder="Repeat Password"
+                   required
+                   aria-required="true"
+                   aria-label="Confirm your password">
             {% if form.password2.errors %}
-                <span class="alert-error">{{ form.password2.errors }}</span>
+                <span class="alert-error" role="alert">{{ form.password2.errors }}</span>
             {% endif %}
         </p>
 
-        <button type="submit" class="btn">Register</button>
+        <!-- submit button -->
+        <button type="submit" class="btn" aria-label="Create your account">Register</button>
     </form>
 
+    <!-- login link -->
     <p>
-        Already have an account? <a href="{% url 'account_login' %}">Sign In</a>
+        Already have an account?
+        <a href="{% url 'account_login' %}" aria-label="Go to sign in page">Sign In</a>
     </p>
+
 </div>
+
 {% endblock %}

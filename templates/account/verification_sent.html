@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="checkout-box" style="max-width: 450px; text-align: center;">
+
+<!-- verification message box -->
+<div class="checkout-box" style="max-width: 450px; text-align: center;" aria-label="Email verification notice">
+
     <h2>✉️ Verify Your Email</h2>
     <div class="divider" style="margin: 15px 0; border-top: 1px solid #eee;"></div>
 
@@ -11,6 +14,11 @@
     </p>
 
     <div class="divider" style="margin: 15px 0; border-top: 1px solid #eee;"></div>
-    <a href="{% url 'home' %}" class="btn">Return Home</a>
+
+    <!-- return home button -->
+    <a href="{% url 'home' %}" class="btn" aria-label="Return to homepage">
+        Return Home
+    </a>
 </div>
+
 {% endblock %}

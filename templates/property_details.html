@@ -3,20 +3,22 @@
 
 {% block content %}
 
-<div class="details-wrapper">
+<!-- property details wrapper -->
+<div class="details-wrapper" aria-label="Property details section">
 
-    <!-- Container wrapper added to control image dimensions -->
     <div class="details-image-container">
         {% if property.image_url %}
-            <img src="{{ property.image_url }}" alt="{{ property.title }}" class="details-img">
+            <!-- main property image -->
+            <img src="{{ property.image_url }}" alt="Main photo of {{ property.title }}" class="details-img">
         {% else %}
-            <img src="https://placehold.co/800x500?text=No+Image" alt="No image available" class="details-img">
+            <img src="https://placehold.co/800x500?text=No+Image" alt="No image available for this property" class="details-img">
         {% endif %}
     </div>
 
-    <div class="info-section">
-        <h1>{{ property.title }}</h1>
-        <p class="price">£{{ property.price }}/month</p>
+    <!-- property info -->
+    <section class="info-section" aria-labelledby="property-title">
+        <h1 id="property-title">{{ property.title }}</h1>
+        <p class="price" aria-label="Price {{ property.price }} pounds per month">£{{ property.price }}/month</p>
 
         <h3>Description</h3>
         <p>{{ property.description }}</p>
@@ -25,39 +27,41 @@
         <p>{{ property.location }}</p>
 
         <h3>Bedrooms</h3>
-        <p>{{ property.bedrooms }}</p>
+        <p aria-label="{{ property.bedrooms }} bedrooms">{{ property.bedrooms }}</p>
 
         <h3>Bathrooms</h3>
-        <p>{{ property.bathrooms }}</p>
+        <p aria-label="{{ property.bathrooms }} bathrooms">{{ property.bathrooms }}</p>
 
-        <div class="action-buttons">
+        <!-- action buttons -->
+        <div class="action-buttons" role="group" aria-label="Property actions">
             {% if user.is_authenticated %}
                 {% if is_saved %}
-                    <a href="{% url 'toggle_save' property.id %}" class="btn btn-secondary">
+                    <a href="{% url 'toggle_save' property.id %}" class="btn btn-secondary" aria-label="Remove {{ property.title }} from saved properties">
                         ✓ Saved — Click to Remove
                     </a>
                 {% elif saved_count >= 3 %}
-                    <button class="btn btn-disabled" disabled>
+                    <button class="btn btn-disabled" disabled aria-label="Save property limit reached">
                         Save Property (limit reached)
                     </button>
                 {% else %}
-                    <a href="{% url 'toggle_save' property.id %}" class="btn btn-secondary">
+                    <a href="{% url 'toggle_save' property.id %}" class="btn btn-secondary" aria-label="Save {{ property.title }} to your saved list">
                         Save Property
                     </a>
                 {% endif %}
 
-                <a href="{% url 'checkout_view' property.id %}" class="btn">
+                <a href="{% url 'checkout_view' property.id %}" class="btn" aria-label="Pay holding deposit for {{ property.title }}">
                     Pay Holding Deposit — £250
                 </a>
             {% else %}
-                <a href="{% url 'account_login' %}" class="btn">
+                <a href="{% url 'account_login' %}" class="btn" aria-label="Log in to save this property or pay a deposit">
                     Log in to Save or Pay Deposit
                 </a>
             {% endif %}
         </div>
-    </div>
+    </section>
 
 </div>
 
 {% endblock %}
+
 

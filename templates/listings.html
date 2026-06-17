@@ -3,24 +3,32 @@
 
 {% block content %}
 
+<!-- listings header -->
 <h1>All Properties</h1>
 <p>Browse everything currently available.</p>
 
-<div class="property-grid">
+<!-- grid of property cards -->
+<div class="property-grid" role="list" aria-label="All property listings">
 
     {% for property in properties %}
-    <div class="property-card">
+    <div class="property-card" role="listitem" aria-label="Property card">
+
         {% if property.image_url %}
+            <!-- property image -->
             <img src="{{ property.image_url }}" alt="{{ property.title }}">
         {% else %}
-            <img src="{% static 'images/placeholder.jpg' %}" alt="Placeholder Image">
+            <img src="{% static 'images/placeholder.jpg' %}" alt="Placeholder image for property">
         {% endif %}
         
         <h3>{{ property.title }}</h3>
-        <p class="price">£{{ property.price }}</p>
+        <p class="price" aria-label="Price {{ property.price }} pounds">£{{ property.price }}</p>
         
-        <a href="{% url 'listing_detail' property.id %}" class="btn">View Details</a>
+        <!-- view details button -->
+        <a href="{% url 'listing_detail' property.id %}" class="btn" aria-label="View details for {{ property.title }}">
+            View Details
+        </a>
     </div>
+
     {% empty %}
     <p>No properties available right now.</p>
     {% endfor %}
@@ -28,3 +36,4 @@
 </div>
 
 {% endblock %}
+

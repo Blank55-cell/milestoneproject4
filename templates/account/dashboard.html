@@ -4,60 +4,79 @@
 
 {% block content %}
 
-<div class="dashboard-wrapper">
+<!-- dashboard wrapper -->
+<div class="dashboard-wrapper" aria-label="User dashboard">
+
     <h1>My Dashboard</h1>
 
-    <!-- Saved Properties -->
-    <section class="dashboard-section">
+    <!-- saved properties section -->
+    <section class="dashboard-section" aria-label="Saved properties">
         <h2>Saved Properties ({{ saved_count }}/3)</h2>
 
         {% if saved_properties %}
             <p>Compare your saved properties below. When ready, pay a holding deposit on your chosen one.</p>
-            <div class="property-grid">
+
+            <!-- saved properties grid -->
+            <div class="property-grid" role="list" aria-label="Saved property list">
+
                 {% for saved in saved_properties %}
-                <div class="property-card">
+                <div class="property-card" role="listitem" aria-label="Saved property card">
+
                     {% if saved.property.image_url %}
                         <img src="{{ saved.property.image_url }}" alt="{{ saved.property.title }}">
                     {% else %}
-                        <img src="https://placehold.co/800x500?text=No+Image" alt="No image">
+                        <img src="https://placehold.co/800x500?text=No+Image" alt="No image available">
                     {% endif %}
 
                     <h3>{{ saved.property.title }}</h3>
-                    <p class="price">£{{ saved.property.price }}/month</p>
+                    <p class="price" aria-label="Price {{ saved.property.price }} pounds per month">£{{ saved.property.price }}/month</p>
                     <p>{{ saved.property.location }}</p>
                     <p>{{ saved.property.bedrooms }} bed · {{ saved.property.bathrooms }} bath</p>
 
-                    <div class="card-actions">
-                        <a href="{% url 'listing_detail' saved.property.id %}" class="btn btn-secondary">
+                    <!-- card actions -->
+                    <div class="card-actions" aria-label="Saved property actions">
+                        <a href="{% url 'listing_detail' saved.property.id %}"
+                           class="btn btn-secondary"
+                           aria-label="View details for {{ saved.property.title }}">
                             View Details
                         </a>
-                        <a href="{% url 'checkout_view' saved.property.id %}" class="btn">
+
+                        <a href="{% url 'checkout_view' saved.property.id %}"
+                           class="btn"
+                           aria-label="Pay holding deposit for {{ saved.property.title }}">
                             Pay Deposit
                         </a>
-                        <form method="POST" action="{% url 'remove_saved' saved.id %}">
+
+                        <form method="POST"
+                              action="{% url 'remove_saved' saved.id %}"
+                              aria-label="Remove saved property form">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-danger"
-                                onclick="return confirm('Remove {{ saved.property.title }} from saved properties?')">
+                            <button type="submit"
+                                    class="btn btn-danger"
+                                    aria-label="Remove {{ saved.property.title }} from saved properties"
+                                    onclick="return confirm('Remove {{ saved.property.title }} from saved properties?')">
                                 Remove
                             </button>
                         </form>
                     </div>
+
                 </div>
                 {% endfor %}
             </div>
+
         {% else %}
             <p>You haven't saved any properties yet.
-                <a href="{% url 'listings' %}">Browse listings</a> to get started.
+                <a href="{% url 'listings' %}" aria-label="Browse all listings">Browse listings</a> to get started.
             </p>
         {% endif %}
     </section>
 
-    <!-- Deposit History -->
-    <section class="dashboard-section">
+    <!-- deposit history section -->
+    <section class="dashboard-section" aria-label="Deposit history">
         <h2>My Deposits</h2>
 
         {% if deposits %}
-            <table class="deposit-table">
+            <table class="deposit-table" aria-label="Deposit history table">
                 <thead>
                     <tr>
                         <th>Property</th>
@@ -66,6 +85,7 @@
                         <th>Status</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     {% for deposit in deposits %}
                     <tr>
@@ -74,15 +94,16 @@
                         <td>{{ deposit.created_at|date:"d M Y" }}</td>
                         <td>
                             {% if deposit.paid %}
-                                <span class="badge-paid">Paid</span>
+                                <span class="badge-paid" aria-label="Deposit paid">Paid</span>
                             {% else %}
-                                <span class="badge-pending">Pending</span>
+                                <span class="badge-pending" aria-label="Deposit pending">Pending</span>
                             {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+
         {% else %}
             <p>No deposits yet. Pay a holding deposit on a saved property to secure your place.</p>
         {% endif %}
