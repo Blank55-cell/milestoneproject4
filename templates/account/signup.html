@@ -28,6 +28,12 @@
                    required
                    aria-required="true"
                    aria-label="Enter your email address">
+            
+            <!-- email tip -->
+            <small style="display: block; color: #666; margin-top: 5px; font-size: 0.85rem;">
+                Please use a personal email (like Gmail). School or work emails may filter out our confirmation messages.
+            </small>
+
             {% if form.email.errors %}
                 <span class="alert-error" role="alert">{{ form.email.errors }}</span>
             {% endif %}
@@ -76,3 +82,4 @@
 </div>
 
 {% endblock %}
+

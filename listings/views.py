@@ -55,7 +55,7 @@ def checkout_view(request, listing_id):
     return render(request, 'checkout.html', context)
 
 
-# Account dashboard (kept here for backwards compat but main one is in accounts app)
+# Account dashboard
 @login_required
 def account_dashboard(request):
     deposits = Deposit.objects.filter(user=request.user, paid=True)
@@ -71,8 +71,12 @@ def create_checkout_session(request, listing_id):
         domain_url = f"{request.scheme}://{request.get_host()}"
 
         try:
-            # Fixed £250 holding deposit in pence
             unit_amount = 25000
+            success_url = (
+                domain_url + f'/checkout/success/?listing_id='
+                f'{property_item.id}&session_id={{CHECKOUT_SESSION_ID}}'
+            )
+            cancel_url = domain_url + f"/listings/{property_item.id}/"
 
             checkout_session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
@@ -81,17 +85,23 @@ def create_checkout_session(request, listing_id):
                         'currency': 'gbp',
                         'product_data': {
                             'name': f"Holding Deposit: {property_item.title}",
-                            'description': f"£250 holding deposit for {property_item.title}. Monthly rent: £{property_item.price}/month.",
+                            'description': (
+                                f"£250 deposit for {property_item.title}. "
+                                f"Monthly rent: £{property_item.price}/month."
+                            ),
                         },
                         'unit_amount': unit_amount,
                     },
                     'quantity': 1,
                 }],
                 mode='payment',
-                success_url=domain_url + f'/checkout/success/?listing_id={property_item.id}&session_id={{CHECKOUT_SESSION_ID}}',
-                cancel_url=domain_url + f"/listings/{property_item.id}/",
+                success_url=success_url,
+                cancel_url=cancel_url,
             )
-            return JsonResponse({'id': checkout_session.id, 'stripe_public_key': settings.STRIPE_PUBLIC_KEY})
+            return JsonResponse({
+                'id': checkout_session.id,
+                'stripe_public_key': settings.STRIPE_PUBLIC_KEY
+            })
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
 
