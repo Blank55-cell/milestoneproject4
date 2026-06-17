@@ -5,11 +5,14 @@
 
 <div class="details-wrapper">
 
-    {% if property.image_url %}
-        <img src="{{ property.image_url }}" alt="{{ property.title }}">
-    {% else %}
-        <img src="https://placehold.co/800x500?text=No+Image" alt="No image available">
-    {% endif %}
+    <!-- Container wrapper added to control image dimensions -->
+    <div class="details-image-container">
+        {% if property.image_url %}
+            <img src="{{ property.image_url }}" alt="{{ property.title }}" class="details-img">
+        {% else %}
+            <img src="https://placehold.co/800x500?text=No+Image" alt="No image available" class="details-img">
+        {% endif %}
+    </div>
 
     <div class="info-section">
         <h1>{{ property.title }}</h1>
