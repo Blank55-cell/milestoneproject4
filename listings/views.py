@@ -71,7 +71,8 @@ def create_checkout_session(request, listing_id):
         domain_url = f"{request.scheme}://{request.get_host()}"
 
         try:
-            unit_amount = int(property_item.price * 100) if property_item.price else 25000
+            # Fixed £250 holding deposit in pence
+            unit_amount = 25000
 
             checkout_session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
@@ -80,7 +81,7 @@ def create_checkout_session(request, listing_id):
                         'currency': 'gbp',
                         'product_data': {
                             'name': f"Holding Deposit: {property_item.title}",
-                            'description': f"Holding deposit for {property_item.title}.",
+                            'description': f"£250 holding deposit for {property_item.title}. Monthly rent: £{property_item.price}/month.",
                         },
                         'unit_amount': unit_amount,
                     },
