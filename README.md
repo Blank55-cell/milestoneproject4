@@ -220,9 +220,49 @@ During development and deployment, several technical roadblocks emerged across d
 
 ---
 
-# Manual Testing
+### Manual Testing Log
 
-Manual testing will be added later once the main pages and Stripe flow are built.
+These tests were carried out manually in the production environment to verify that authentication, property listing logic, dashboard controls, and Stripe payments are completely functional.
+
+#### 1. Authentication & Account Management
+| Feature | Steps Taken | Expected / Observed Result | Status |
+| :--- | :--- | :--- | :--- |
+| **Account Creation** | Filled out `sign_up.html` with a valid email address and matching passwords. | Form submitted successfully. Checked the database and confirmed the user record was created. Brevo fired the confirmation email, and the browser loaded `verification_sent.html`. | PASS |
+| **Sign-up Validation** | Submitted the registration form with mismatched passwords and an invalid email format. | The backend rejected the submission and re-rendered the form, displaying specific error messages (`alert-error`) directly under the problem fields. | PASS |
+| **Email Verification Link**| Clicked the activation link sent to the test inbox. | The user account status updated to active in the database. The application redirected to the user dashboard with a success message banner. | PASS |
+| **CLI Verification Bypass**| Ran `python manage.py verify_emails` in the terminal to clear out unverified test accounts during staging. | The script found all unverified accounts, updated their `verified` and `primary` flags to True, and printed out individual confirmation logs to stdout. | PASS |
+| **User Sign In** | Logged into the verified account using the form on `login.html`. | Session started correctly. The navigation bar updated to show "Dashboard" and "Logout" options, and the page redirected to the home view. | PASS |
+| **Sign In Validation** | Entered incorrect passwords and bad email strings into the login form. | The login attempt was blocked. The page refreshed and displayed non-field errors at the top of the card. | PASS |
+| **User Sign Out** | Clicked the "Logout" link in the navigation menu. | Session cookie cleared immediately. The navigation bar went back to its default unauthenticated state, and the user was sent back to the homepage. | PASS |
+
+#### 2. Property Listings
+| Feature | Steps Taken | Expected / Observed Result | Status |
+| :--- | :--- | :--- | :--- |
+| **DB Seeding Utility** | Ran the `python manage.py seed_properties` command on the hosting platform's terminal. | The script parsed the data array and populated 6 base UK property records. Re-running the command confirmed it is idempotent—it skipped existing records without duplicating them. | PASS |
+| **Directory Page** | Navigated to the `/listings/` directory without logging into an account. | The page pulled all 6 properties from the database, displaying correct titles, rental prices, locations, and images without any layout breaks. | PASS |
+| **Homepage Featured Carousel**| Checked the main landing page layout against database flags. | The homepage view successfully filtered the properties, displaying only the 3 specific listings that have `is_featured=True` set in the database. | PASS |
+| **Database Empty Fallbacks**| Temporarily emptied the Property table in the DB to test empty states. | The templates handled the missing data gracefully, showing fallback text: "No properties available right now" and "No featured properties at the moment". | PASS |
+
+#### 3. Bookmarking & Dashboard Limits
+| Feature | Steps Taken | Expected / Observed Result | Status |
+| :--- | :--- | :--- | :--- |
+| **Bookmark Saving** | Logged into a test account and clicked "Save Property" on a listing page. | A new record was inserted into the `accounts_savedproperty` table, mapping the current `User` ID to the `Property` ID. A success message flashed on the screen. | PASS |
+| **3-Property Cap** | Bookmarked 3 properties, then navigated to a 4th listing and tried to save it. | The `toggle_save_property` view intercepted the request, saw the count was already at 3, blocked the database write, and returned a Django error message stating the limit was reached. | PASS |
+| **Dashboard Counter** | Opened up `dashboard.html` with 2 bookmarked items. | The template read the `saved_count` context variable and accurately updated the header section text to read: `Saved Properties (2/3)`. | PASS |
+| **Dashboard Empty State** | Logged into a completely blank new account and viewed the dashboard. | The saved property grid was hidden, and a clean fallback paragraph appeared with a text link guiding the user back to the main listings directory. | PASS |
+| **DB Duplicate Block** | Attempted to double-submit a save request for an already bookmarked property. | The database-level `unique_together` constraint on the `SavedProperty` model caught the conflict and prevented a duplicate row from being created. | PASS |
+| **Removing Bookmarks** | Clicked the "Remove" button on a property card within the dashboard view. | A native browser confirmation modal popped up. Clicking "OK" fired a POST request to `remove_saved_property`, dropping the row from the database and refreshing the grid. | PASS |
+
+#### 4. Stripe Integration & Checkout
+| Feature | Steps Taken | Expected / Observed Result | Status |
+| :--- | :--- | :--- | :--- |
+| **Stripe Redirection** | Clicked "Pay Holding Deposit" on the checkout page. | The frontend script gathered the property's data attributes and hit the `create_checkout_session` backend endpoint. The view compiled the session details and passed the user to the Stripe hosted gateway. | PASS |
+| **Double-Click Lockout** | Clicked the "Pay Holding Deposit" button multiple times rapidly. | On the first click, the JavaScript file immediately disabled the button element and changed its text to "Redirecting to checkout...", blocking duplicate API calls. | PASS |
+| **CSRF Injection** | Monitored the outgoing checkout session fetch request via the DevTools Network tab. | Confirmed that the JavaScript cleanly pulled the token value from the `csrftoken` browser cookie and injected it into the request's `X-CSRFToken` header. | PASS |
+| **Sandbox Enforcement** | Viewed the top banner of the redirected payment checkout screen. | The checkout page loaded with a visible "Test Mode" watermark, confirming the application is routing data using the sandbox API keys. | PASS |
+| **Test Transaction** | Completed the checkout form using the Stripe test card numbers (`4242`). | The payment processed successfully on Stripe's end. The gateway handled the routing parameters and passed the user back to the application's `/checkout/success/` path. | PASS |
+| **Success Page Capture** | Verified database updates immediately after landing on the success page. | The `payment_success` view parsed the incoming URL parameters, fetched the session from Stripe, generated a new `Deposit` record with the transaction ID, and flipped `paid` to True. | PASS |
+| **Deposit History Table** | Navigated back to the dashboard to review the payment history. | The deposit table appeared on the dashboard, displaying the newly created transaction record showing the property name, creation timestamp, flat £250.00 amount, and a green "Paid" badge. | PASS |
 
 ---
 
