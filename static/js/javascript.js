@@ -48,11 +48,11 @@ if (checkoutBtn) {
         }
 
         fetch("/checkout/session/" + listingId + "/", {
-            method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRFToken": csrfToken
-            }
+            },
+            method: "POST"
         })
             .then(function (response) {
                 return response.json();
@@ -65,7 +65,7 @@ if (checkoutBtn) {
                     return;
                 }
 
-                const stripe = Stripe(data.stripe_public_key);
+                const stripe = new Stripe(data.stripe_public_key);
                 stripe.redirectToCheckout({
                     sessionId: data.id
                 });
@@ -80,7 +80,7 @@ if (checkoutBtn) {
 }
 
 // smooth scroll for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(function (link) {
+document.querySelectorAll("a[href^=\"#\"]").forEach(function (link) {
     "use strict";
     link.addEventListener("click", function (e) {
         const targetAttr = link.getAttribute("href");
