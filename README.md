@@ -432,6 +432,9 @@ This picked up the usual things — indentation, long lines, and trailing spaces
 ![Account urls](testing/accounturls.png)
 
 ![Account models](testing/accountmodels.png)
+
+
+![Manage.py](testing/managepy.png)
 ---
 
 ### 5. Chrome Lighthouse Testing
