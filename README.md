@@ -375,7 +375,18 @@ This project went through a mix of validator tools and manual checks to make sur
 ### 1. HTML Validation (Nu HTML Checker)
 
 All templates were run through the Nu HTML Checker to catch any structural issues.  
-A few small things came up during development (like missing alt text or mismatched variable names), but everything passed once those were fixed.
+A few small things came up during development (like missing alt text or mismatched variable names missing aria labels as well as misplaced ones), but everything passed once those were fixed.
+#### HTML Validation Results
+
+![Checkout HTML Validation](testing/checkoutvalidhtml.png)
+![Dashboard HTML Validation](testing/dashboardhtmlvalid.png)
+![Home HTML Validation](testing/homehtmlvalid.png)
+![Listings HTML Validation](testing/listingshtmlvalid.png)
+![Login HTML Validation](testing/loginhtmlvalid.png)
+![Property Details HTML Validation](testing/propertydetailshtmlvalid.png)
+![Signup HTML Validation](testing/signuphtmlvalid.png)
+![Success HTML Validation](testing/successhtmlvalid.png)
+![Verification Sent HTML Validation](testing/verificationsenthtmlvalid.png)
 
 ---
 
@@ -384,6 +395,8 @@ A few small things came up during development (like missing alt text or mismatch
 The main stylesheet was tested using the W3C CSS Validator.  
 No major errors appeared — just a couple of warnings that were cleaned up.  
 The final CSS passed validation without issues.
+
+![Css Validation](testing/w3csValid.png)
 
 ---
 
@@ -421,9 +434,16 @@ All pages now score well across the board.
 The site was tested on different screen sizes using Chrome DevTools and real devices.
 
 **Devices tested:**
-- Laptop (1440px and above)  
-- Tablet (768px–1024px)  
-- Mobile (375px–480px)
+#### Responsiveness Screenshots
+
+**Laptop View**
+![Laptop Responsive Test](testing/laptopresponse.png)
+
+**Tablet View**
+![Tablet Responsive Test](testing/tabletresponse.png)
+
+**Mobile View**
+![Mobile Responsive Test](testing/smallphoneresponse.png)
 
 **What was checked:**
 - Navigation stays usable  
