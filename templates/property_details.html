@@ -4,7 +4,7 @@
 {% block content %}
 
 <!-- property details wrapper -->
-<div class="details-wrapper" aria-label="Property details section">
+<div class="details-wrapper" role="region" aria-label="Property details section">
 
     <div class="details-image-container">
         {% if property.image_url %}
@@ -24,19 +24,19 @@
             £{{ property.price }}/month
         </p>
 
-        <h3>Description</h3>
+        <h2>Description</h2>
         <p>{{ property.description }}</p>
 
-        <h3>Location</h3>
+        <h2>Location</h2>
         <p>{{ property.location }}</p>
 
-        <h3>Bedrooms</h3>
+        <h2>Bedrooms</h2>
         <p>
             <span class="visually-hidden">{{ property.bedrooms }} bedrooms</span>
             {{ property.bedrooms }}
         </p>
 
-        <h3>Bathrooms</h3>
+        <h2>Bathrooms</h2>
         <p>
             <span class="visually-hidden">{{ property.bathrooms }} bathrooms</span>
             {{ property.bathrooms }}
@@ -73,6 +73,7 @@
 </div>
 
 {% endblock %}
+
 
 
 
