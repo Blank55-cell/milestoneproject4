@@ -31,7 +31,11 @@
             {% endif %}
             
             <h3>{{ property.title }}</h3>
-            <p class="price" aria-label="Price {{ property.price }} pounds">£{{ property.price }}</p>
+
+            <!-- FIXED: aria-label moved to span -->
+            <p class="price">
+                <span aria-label="Price {{ property.price }} pounds">£{{ property.price }}</span>
+            </p>
             
             <!-- view button -->
             <a href="{% url 'listing_detail' property.id %}" class="btn" aria-label="View details for {{ property.title }}">
@@ -47,4 +51,6 @@
 </section>
 
 {% endblock %}
+
+
 

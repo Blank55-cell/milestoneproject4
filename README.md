@@ -6,19 +6,22 @@ The aim is to keep everything clean and simple while showing how Django, user ac
 
 ---
 
-# Quick Links
+## Quick Links
 
-- [How to Copy and Run This Project on Your Own Computer](#how-to-copy-and-run-this-project-on-your-own-computer)
 - [What This Site Is For](#what-this-site-is-for)
 - [User Stories](#user-stories)
-- [Tools (Work in Progress)](#tools-work-in-progress)
+- [Tools & Technologies Used](#tools--technologies-used)
 - [Who This Is For](#who-this-is-for)
 - [Pages Used in This Project](#pages-used-in-this-project)
 - [Features](#features)
-- [Deployment](#deployment)
-- [Manual Testing](#manual-testing)
+- [Deployment & Twelve-Factor Architecture](#deployment--twelve-factor-architecture)
+- [How to Copy and Run This Project on Your Own Computer](#how-to-copy-and-run-this-project-on-your-own-computer)
+- [Bugs and Troubleshooting Log](#bugs-and-troubleshooting-log)
+- [Testing](#testing)
+- [Manual Testing Log](#manual-testing-log)
 - [External Code Attribution](#external-code-attribution)
 - [Disclaimer](#disclaimer)
+
 
 ---
 
@@ -26,50 +29,6 @@ The aim is to keep everything clean and simple while showing how Django, user ac
 
 The goal is to build a simple real‑estate platform where users can browse properties, save the ones they like, and pay booking fees securely.  
 Nothing complicated — just a clean layout and a straightforward flow.
-
----
-
-# How to Copy and Run This Project on Your Own Computer
-
-### 1. Clone the Repository
-```bash
-git clone https://github.com/YOUR-USERNAME/milestoneproject4.git
-```
-
-### 2. Go Into the Project Folder
-```bash
-cd milestoneproject4
-```
-
-### 3. Create a Virtual Environment
-```bash
-py -m venv venv
-```
-
-### 4. Activate It
-```bash
-venv\Scripts\activate
-```
-
-### 5. Install Requirements
-```bash
-pip install -r requirements.txt
-```
-
-### 6. Apply Migrations
-```bash
-py manage.py migrate
-```
-
-### 7. Run the Server
-```bash
-py manage.py runserver
-```
-
-### 8. Open the Site
-```
-http://127.0.0.1:8000
-```
 
 ---
 
@@ -84,7 +43,6 @@ http://127.0.0.1:8000
 
 ---
 
-# Tools & Technologies Used
 
 # Tools & Technologies Used
 
@@ -149,6 +107,148 @@ Instead of hardcoding settings or exposing private keys in GitHub, the app shift
 
 * **Local Development:** Uses a local `.env` file with `DEBUG=True` so Django can display detailed error screens during coding and testing.
 * **Production (Railway):** Railway injects live environment variables directly into the hosting container. This forces `DEBUG=False` for security and tells WhiteNoise to safely serve the compiled static CSS and JavaScript files.
+
+To be able to clone this project and run it on your own computer follow the steps below:
+
+## How to Copy and Run This Project on Your Own Computer
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/YOUR-USERNAME/milestoneproject4.git
+```
+
+### 2. Go Into the Project Folder
+```bash
+cd milestoneproject4
+```
+
+### 3. Create a Virtual Environment
+```bash
+py -m venv venv
+```
+
+### 4. Activate It
+```bash
+venv\Scripts\activate
+```
+
+### 5. Install Requirements
+```bash
+pip install -r requirements.txt
+```
+
+### 6. Apply Migrations
+```bash
+py manage.py migrate
+```
+
+### 7. Run the Server
+```bash
+py manage.py runserver
+```
+
+### 8. Open the Site
+```
+http://127.0.0.1:8000
+```
+
+### Cloud Deployment (Railway)
+
+This project is fully configured to deploy on Railway. Below is the full process used to take the live version online.
+
+### 1. Connect the Project to Railway
+1. Log into your Railway account  
+2. Click **New Project**  
+3. Select **Deploy from GitHub Repo**  
+4. Choose your `milestoneproject4` repository  
+
+Railway will automatically detect that it’s a Django project.
+
+### 2. Add Required Environment Variables
+Railway does not use a `.env` file. All variables must be added manually in the **Variables** tab.
+
+The project requires:
+
+DEBUG=False
+SECRET_KEY=your_production_secret_key
+DATABASE_URL=provided_by_railway
+RENTCAST_API_KEY=your_api_key
+STRIPE_PUBLIC_KEY=your_key
+STRIPE_SECRET_KEY=your_key
+STRIPE_WEBHOOK_SECRET=your_key
+
+Code
+
+These are injected automatically when the app runs.
+
+### 3. Add a PostgreSQL Database (If Not Already Added)
+If Railway hasn’t already created one:
+
+1. Click **Add Service**  
+2. Choose **PostgreSQL**  
+3. Railway will generate a `DATABASE_URL`  
+4. Copy it into your project’s Variables tab  
+
+Django will use this database in production.
+
+### 4. Configure the Start Command
+Railway needs a command to run Django using Gunicorn.
+
+In **Settings → Start Command**, enter:
+
+gunicorn realestatehub.wsgi
+
+Code
+
+(Replace `realestatehub` with your Django project folder name.)
+
+### 5. Configure Static Files (WhiteNoise)
+Django 6 uses the new `STORAGES` block. Your production settings must include:
+
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+}
+
+
+This ensures CSS and JS load correctly on Railway.
+
+6. Allowed Hosts
+In settings.py, make sure Railway is allowed to serve the site:
+
+python
+ALLOWED_HOSTS = ['*']
+You can replace '*' with your Railway domain later.
+
+7. Run Migrations on Railway
+Open the Railway Shell and run:
+
+bash
+python manage.py migrate
+This creates the database tables on the live PostgreSQL instance.
+
+8. Redeploying After Updates
+Railway redeploys automatically whenever you push to GitHub.
+
+Use your normal Git workflow:
+
+bash
+git add .
+git commit -m "Update: deployment changes"
+git push
+Railway will rebuild and redeploy the project.
+
+9. Live Site
+Once deployed, Railway provides a live URL under the Domains tab.
+
+It will appear in this format:
+
+Live Site: https://your-railway-url
+GitHub Repo: https://github.com/YOUR-USERNAME/milestoneproject4
 
 ---
 
@@ -263,6 +363,96 @@ These tests were carried out manually in the production environment to verify th
 | **Test Transaction** | Completed the checkout form using the Stripe test card numbers (`4242`). | The payment processed successfully on Stripe's end. The gateway handled the routing parameters and passed the user back to the application's `/checkout/success/` path. | PASS |
 | **Success Page Capture** | Verified database updates immediately after landing on the success page. | The `payment_success` view parsed the incoming URL parameters, fetched the session from Stripe, generated a new `Deposit` record with the transaction ID, and flipped `paid` to True. | PASS |
 | **Deposit History Table** | Navigated back to the dashboard to review the payment history. | The deposit table appeared on the dashboard, displaying the newly created transaction record showing the property name, creation timestamp, flat £250.00 amount, and a green "Paid" badge. | PASS |
+
+---
+
+## Testing
+
+This project went through a mix of validator tools and manual checks to make sure everything works properly, looks clean, and behaves well across different devices. Below is a breakdown of the testing carried out.
+
+---
+
+### 1. HTML Validation (Nu HTML Checker)
+
+All templates were run through the Nu HTML Checker to catch any structural issues.  
+A few small things came up during development (like missing alt text or mismatched variable names), but everything passed once those were fixed.
+
+---
+
+### 2. CSS Validation (W3C CSS Validator)
+
+The main stylesheet was tested using the W3C CSS Validator.  
+No major errors appeared — just a couple of warnings that were cleaned up.  
+The final CSS passed validation without issues.
+
+---
+
+### 3. JavaScript Validation (JSLint)
+
+All JavaScript files were checked using JSLint.  
+This helped catch things like missing semicolons, unused variables, and spacing problems.  
+Everything passed after a few small tidy‑ups.
+
+---
+
+### 4. Python Validation (Code Institute Python Linter)
+
+All Python files were run through the Code Institute Python Linter to keep everything PEP8‑friendly.  
+This picked up the usual things — indentation, long lines, and trailing spaces — which were fixed as they came up.
+
+---
+
+### 5. Chrome Lighthouse Testing
+
+Each main page was tested in Chrome Lighthouse for:
+
+- Performance  
+- Accessibility  
+- Best Practices  
+- SEO  
+
+Scores improved after adding ARIA labels, checking colour contrast, and removing unused code.  
+All pages now score well across the board.
+
+---
+
+### 6. Responsiveness Testing
+
+The site was tested on different screen sizes using Chrome DevTools and real devices.
+
+**Devices tested:**
+- Laptop (1440px and above)  
+- Tablet (768px–1024px)  
+- Mobile (375px–480px)
+
+**What was checked:**
+- Navigation stays usable  
+- Buttons and forms scale properly  
+- Property cards stack cleanly  
+- No horizontal scrolling  
+- Images resize without stretching  
+
+The layout adapts smoothly across all breakpoints.
+
+---
+
+### 7. Manual User Flow Testing
+
+Each main user journey was tested manually:
+
+- Browsing listings  
+- Viewing property details  
+- Creating an account  
+- Logging in and out  
+- Saving and removing properties  
+- Paying a holding deposit through Stripe  
+- Checking deposit history in the dashboard  
+
+All flows behaved as expected.
+
+
+
+
 
 ---
 
