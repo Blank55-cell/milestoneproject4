@@ -19,9 +19,9 @@
     <section class="info-section" aria-labelledby="property-title">
         <h1 id="property-title">{{ property.title }}</h1>
 
-        
         <p class="price">
-            <span aria-label="Price {{ property.price }} pounds per month">£{{ property.price }}/month</span>
+            <span class="visually-hidden">Price {{ property.price }} pounds per month</span>
+            £{{ property.price }}/month
         </p>
 
         <h3>Description</h3>
@@ -31,15 +31,15 @@
         <p>{{ property.location }}</p>
 
         <h3>Bedrooms</h3>
-        
         <p>
-            <span aria-label="{{ property.bedrooms }} bedrooms">{{ property.bedrooms }}</span>
+            <span class="visually-hidden">{{ property.bedrooms }} bedrooms</span>
+            {{ property.bedrooms }}
         </p>
 
         <h3>Bathrooms</h3>
-        
         <p>
-            <span aria-label="{{ property.bathrooms }} bathrooms">{{ property.bathrooms }}</span>
+            <span class="visually-hidden">{{ property.bathrooms }} bathrooms</span>
+            {{ property.bathrooms }}
         </p>
 
         <!-- action buttons -->
@@ -73,6 +73,7 @@
 </div>
 
 {% endblock %}
+
 
 
 

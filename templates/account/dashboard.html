@@ -29,7 +29,12 @@
                     {% endif %}
 
                     <h3>{{ saved.property.title }}</h3>
-                    <p class="price" aria-label="Price {{ saved.property.price }} pounds per month">£{{ saved.property.price }}/month</p>
+
+                    <p class="price">
+                        <span class="visually-hidden">Price {{ saved.property.price }} pounds per month</span>
+                        £{{ saved.property.price }}/month
+                    </p>
+
                     <p>{{ saved.property.location }}</p>
                     <p>{{ saved.property.bedrooms }} bed · {{ saved.property.bathrooms }} bath</p>
 
@@ -90,13 +95,16 @@
                     {% for deposit in deposits %}
                     <tr>
                         <td>{{ deposit.property.title }}</td>
-                        <td>£{{ deposit.amount }}</td>
+                        <td>
+                            <span class="visually-hidden">Deposit amount {{ deposit.amount }} pounds</span>
+                            £{{ deposit.amount }}
+                        </td>
                         <td>{{ deposit.created_at|date:"d M Y" }}</td>
                         <td>
                             {% if deposit.paid %}
-                                <span class="badge-paid" aria-label="Deposit paid">Paid</span>
+                                <span class="badge-paid">Paid</span>
                             {% else %}
-                                <span class="badge-pending" aria-label="Deposit pending">Pending</span>
+                                <span class="badge-pending">Pending</span>
                             {% endif %}
                         </td>
                     </tr>
@@ -112,3 +120,4 @@
 </div>
 
 {% endblock %}
+

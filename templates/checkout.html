@@ -23,9 +23,8 @@
         <p>{{ property.location }}</p>
 
         <p class="price">
-            <span aria-label="Monthly rent {{ property.price }} pounds">
-                Monthly Rent: £{{ property.price }}
-            </span>
+            <span class="visually-hidden">Monthly rent {{ property.price }} pounds</span>
+            Monthly Rent: £{{ property.price }}
         </p>
 
         <p class="deposit-note">Holding deposit: <strong>£250</strong></p>

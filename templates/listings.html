@@ -23,7 +23,8 @@
         <h3>{{ property.title }}</h3>
 
         <p class="price">
-            <span aria-label="Price {{ property.price }} pounds">£{{ property.price }}</span>
+            <span class="visually-hidden">Price {{ property.price }} pounds</span>
+            £{{ property.price }}
         </p>
         
         <!-- view details button -->
@@ -39,5 +40,6 @@
 </div>
 
 {% endblock %}
+
 
 
