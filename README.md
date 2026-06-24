@@ -424,6 +424,33 @@ Each main page was tested in Chrome Lighthouse for:
 - Best Practices  
 - SEO  
 
+**Checkout Page**
+![Checkout Lighthouse](testing/checkoutlighthouse.png)
+
+**Dashboard Page**
+![Dashboard Lighthouse](testing/dashboardlighthouse.png)
+
+**Home Page**
+![Home Lighthouse](testing/homelighthouse.png)
+
+**Listings Page**
+![Listings Lighthouse](testing/listingslighthouse.png)
+
+**Login Page**
+![Login Lighthouse](testing/signuplighthouse.png)
+
+**Property Details Page**
+![Property Details Lighthouse](testing/propertydetailslighthouse.png)
+
+**Signup Page**
+![Signup Lighthouse](testing/signuplighthouse.png)
+
+**Success Page**
+![Success Lighthouse](testing/successlighthouse.png)
+
+**Verification Sent Page**
+![Verification Sent Lighthouse](testing/emailverifylighthouse.png)
+
 Scores improved after adding ARIA labels, checking colour contrast, and removing unused code.  
 All pages now score well across the board.
 
@@ -469,9 +496,6 @@ Each main user journey was tested manually:
 - Checking deposit history in the dashboard  
 
 All flows behaved as expected.
-
-
-
 
 
 ---
