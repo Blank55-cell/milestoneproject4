@@ -9,49 +9,81 @@ from .models import SavedProperty
 def account_dashboard(request):
     # Grab all successful deposits for the logged-in user
     user_deposits = Deposit.objects.filter(
-        user=request.user, paid=True
-    ).order_by('-created_at')
+        user=request.user,
+        paid=True
+    ).order_by("-created_at")
 
     # Grab saved properties for comparison
     saved_properties = SavedProperty.objects.filter(
         user=request.user
-    ).order_by('-added_at')
+    ).order_by("-added_at")
 
     context = {
-        'deposits': user_deposits,
-        'saved_properties': saved_properties,
-        'saved_count': saved_properties.count(),
+        "deposits": user_deposits,
+        "saved_properties": saved_properties,
+        "saved_count": saved_properties.count(),
     }
-    return render(request, 'account/dashboard.html', context)
+    return render(
+        request,
+        "account/dashboard.html",
+        context
+    )
 
 
 @login_required
 def toggle_save_property(request, listing_id):
     property_item = get_object_or_404(Property, id=listing_id)
     existing = SavedProperty.objects.filter(
-        user=request.user, property=property_item
+        user=request.user,
+        property=property_item
     ).first()
 
     if existing:
         # Already saved — remove it
+        messages.success(
+            request,
+            f'"{property_item.title}" removed from your saved properties.'
+        )
         existing.delete()
-        messages.success(request, f'"{property_item.title}" removed from your saved properties.')
     else:
         # Enforce 3-property limit
-        if SavedProperty.objects.filter(user=request.user).count() >= 3:
-            messages.error(request, 'You can only save up to 3 properties. Remove one first.')
+        if SavedProperty.objects.filter(
+            user=request.user
+        ).count() >= 3:
+            messages.error(
+                request,
+                "You can only save up to 3 properties. "
+                "Remove one first."
+            )
         else:
-            SavedProperty.objects.create(user=request.user, property=property_item)
-            messages.success(request, f'"{property_item.title}" saved to your dashboard.')
+            SavedProperty.objects.create(
+                user=request.user,
+                property=property_item
+            )
+            messages.success(
+                request,
+                f'"{property_item.title}" saved to your dashboard.'
+            )
 
-    return redirect(request.META.get('HTTP_REFERER', 'home'))
+    return redirect(
+        request.META.get("HTTP_REFERER", "home")
+    )
 
 
 @login_required
 def remove_saved_property(request, saved_id):
     # Only lets the owner delete their own saved property
-    saved = get_object_or_404(SavedProperty, id=saved_id, user=request.user)
+    saved = get_object_or_404(
+        SavedProperty,
+        id=saved_id,
+        user=request.user
+    )
     title = saved.property.title
     saved.delete()
-    messages.success(request, f'"{title}" removed from your saved properties.')
-    return redirect('account_dashboard')
+
+    messages.success(
+        request,
+        f'"{title}" removed from your saved properties.'
+    )
+
+    return redirect("account_dashboard")

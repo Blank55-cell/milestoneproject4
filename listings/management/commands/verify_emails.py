@@ -12,6 +12,14 @@ class Command(BaseCommand):
             email.primary = True
             email.save()
             updated += 1
-            self.stdout.write(self.style.SUCCESS(f"Verified: {email.email}"))
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"Verified: {email.email}"
+                )
+            )
 
-        self.stdout.write(self.style.SUCCESS(f"Done. {updated} accounts verified."))
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"Done. {updated} accounts verified."
+            )
+        )

@@ -406,13 +406,32 @@ All JavaScript files were checked using JSLint.
 This helped catch things like missing semicolons, unused variables, and spacing problems.  
 Everything passed after a few small tidy‑ups.
 
+![Jslint](testing/jslinttest.png)
+
 ---
 
 ### 4. Python Validation (Code Institute Python Linter)
 
 All Python files were run through the Code Institute Python Linter to keep everything PEP8‑friendly.  
 This picked up the usual things — indentation, long lines, and trailing spaces — which were fixed as they came up.
+![Listing seed properties](testing/listingsseedproperties.png)
 
+![Listing models](testing/listingmodels.png)
+
+![Listing verify email](testing/listingsverifyemails.png)
+
+![Listings urls](testing/listingurls.png)
+
+![Listing views](testing/listviewstest.png)
+
+![Listing admin](testing/adminpy.png)
+
+
+![Account views](testing/accountviews.png)
+
+![Account urls](testing/accounturls.png)
+
+![Account models](testing/accountmodels.png)
 ---
 
 ### 5. Chrome Lighthouse Testing
