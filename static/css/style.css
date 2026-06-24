@@ -18,18 +18,22 @@ body {
 
 /* hero section */
 .hero {
-    padding: 80px 20px;
+    padding: 60px 20px; /* Reduced padding for mobile */
     text-align: center;
 }
 
 .hero h1 {
-    font-size: 2.8rem;
-    margin-bottom: 10px;
+    font-size: 2rem; /* Smaller on mobile */
 }
 
-.hero p {
-    font-size: 1.1rem;
-    color: var(--text-light);
+/* Added a breakpoint for larger screens */
+@media (min-width: 768px) {
+    .hero {
+        padding: 100px 20px; /* Larger padding on desktop */
+    }
+    .hero h1 {
+        font-size: 3.5rem; /* Larger title on desktop */
+    }
 }
 
 /* buttons */
