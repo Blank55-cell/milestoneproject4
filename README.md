@@ -14,6 +14,8 @@ The aim is to keep everything clean and simple while showing how Django, user ac
 - [Who This Is For](#who-this-is-for)
 - [Pages Used in This Project](#pages-used-in-this-project)
 - [Features](#features)
+- [Database Design (ERD)](#database-design-erd)
+- [Wireframes](#wireframe)
 - [Deployment & Twelve-Factor Architecture](#deployment--twelve-factor-architecture)
 - [How to Copy and Run This Project on Your Own Computer](#how-to-copy-and-run-this-project-on-your-own-computer)
 - [Bugs and Troubleshooting Log](#bugs-and-troubleshooting-log)
@@ -61,6 +63,35 @@ Nothing complicated — just a clean layout and a straightforward flow.
 - **Version Control:** Git and GitHub for branch management and project history.
 
 ---
+
+### Database Design (ERD)
+
+I built the database to handle the core parts of the site: users, property listings, favourites, and the deposit payments. You can see how everything connects in my schema diagram here:
+
+- **[View the RealEstateHub Database Schema](https://dbdiagram.io/d/Real-Estate-6a1e3c202eeb2f46cd3989fc)**
+
+I’m using PostgreSQL for this project to make sure the data stays consistent. It handles the relationships between the user accounts, the properties they save, and their payment records.
+
+
+
+
+---
+
+
+### Wireframe
+I mapped out the site structure and user flow using wireframes to ensure i knew the layout was what i wanted:
+
+- **[View Project Wireframes](https://whimsical.com/project4812/Tr2DDvr5wT3wYgXAQkVBnM)**
+
+
+
+
+
+
+
+---
+
+
 
 # Who This Is For
 
