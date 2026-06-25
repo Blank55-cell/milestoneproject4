@@ -51,12 +51,12 @@ Nothing complicated — just a clean layout and a straightforward flow.
 - **Frontend:** HTML5, CSS3, JavaScript (ES6+)
 - **Hosting & Deployment:** Railway
 - **Database:** PostgreSQL (Production via Railway) / SQLite (Local Development)
-- **Third-Party APIs:** - RentCast API (Real-time property data and metrics integration)
-  - Stripe API (Configured for future secure booking checkout processing)
+- **Data Management:** Custom Django management command (`seed_properties`) used to populate the database with consistent property listings.
+- **Third-Party APIs:** Stripe API (Secure handling of customer holding deposit payments).
 
 ### Code Validation & Quality Control
 - **Nu HTML Checker:** Used to validate HTML templates and ensure proper semantic markup.
-- **JSLint / JSHint:** Used for JavaScript quality checks, catching syntax slips, and standardizing frontend code.
+- **JSLint:** Used for JavaScript quality checks, catching syntax slips, and standardizing frontend code.
 - **PEP8 Guidelines:** Followed across all Python modules to keep the backend uniform and readable.
 - **Version Control:** Git and GitHub for branch management and project history.
 
